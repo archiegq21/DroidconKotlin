@@ -59,7 +59,16 @@ dependencies {
 
 kotlin {
     android()
-    ios()
+
+    // TODO: Revert to `ios()` once
+    //  https://github.com/cashapp/sqldelight/issues/2044#issuecomment-721319037
+    //  gets resolved
+    val onPhone = System.getenv("SDK_NAME")?.startsWith("iphoneos") ?: false
+    if (onPhone) {
+        iosArm64("ios")
+    } else {
+        iosX64("ios")
+    }
 
     sourceSets {
         val commonMain by getting {
