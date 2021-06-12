@@ -67,7 +67,7 @@ object Deps {
         }
 
         object Coroutines {
-            const val version = "1.4.3-native-mt"
+            const val version = "1.5.0-native-mt"
             const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
             const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         }

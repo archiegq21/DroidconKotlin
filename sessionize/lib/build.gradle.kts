@@ -81,7 +81,11 @@ kotlin {
                 implementation(Deps.multiplatformSettings)
                 implementation(Deps.Serialization.commonRuntime)
                 implementation(Deps.Firebase.GitLive.firestore)
-                implementation(Deps.Kotlin.Coroutines.common)
+                implementation(Deps.Kotlin.Coroutines.common) {
+                    version {
+                        strictly(Deps.Kotlin.Coroutines.version)
+                    }
+                }
 
                 implementation(Deps.Ktor.commonCore)
                 implementation(Deps.Ktor.commonJson)
