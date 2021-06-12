@@ -8,21 +8,7 @@ import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import platform.Foundation.NSApplicationSupportDirectory
-import platform.Foundation.NSDate
-import platform.Foundation.NSFileManager
-import platform.Foundation.NSSearchPathForDirectoriesInDomains
-import platform.Foundation.NSString
-import platform.Foundation.NSThread
-import platform.Foundation.NSURL
-import platform.Foundation.NSURLConnection
-import platform.Foundation.NSURLRequest
-import platform.Foundation.NSUTF8StringEncoding
-import platform.Foundation.NSUUID
-import platform.Foundation.NSUserDomainMask
-import platform.Foundation.create
-import platform.Foundation.sendSynchronousRequest
-import platform.Foundation.timeIntervalSince1970
+import platform.Foundation.*
 
 actual fun currentTimeMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
 
