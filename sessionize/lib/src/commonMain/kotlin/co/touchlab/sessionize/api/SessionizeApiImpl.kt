@@ -7,6 +7,7 @@ import co.touchlab.sessionize.jsondata.Session
 import co.touchlab.sessionize.jsondata.Speaker
 import co.touchlab.sessionize.jsondata.SponsorSessionGroup
 import co.touchlab.sessionize.platform.createUuid
+import co.touchlab.stately.freeze
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -24,7 +25,15 @@ object SessionizeApiImpl : SessionizeApi {
     private val client by lazy {
         HttpClient {
             install(JsonFeature) {
-                serializer = KotlinxSerializer()
+                serializer = KotlinxSerializer(
+                    kotlinx.serialization.json.Json {
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                        // TODO: Revisit once https://github.com/Kotlin/kotlinx.serialization/issues/1450#issuecomment-841214332
+                        //  gets resolved. As a workaround, disabling `useAlternativeNames` solves the issue.
+                        useAlternativeNames = false
+                    }
+                )
             }
 
             install(Logging) {
@@ -32,7 +41,7 @@ object SessionizeApiImpl : SessionizeApi {
                 level = LogLevel.ALL
             }
         }
-    }
+    }.freeze()
 
     override suspend fun getSpeakers(): List<Speaker> = client.get(
         urlString = "https://sessionize.com/api/v2/$SPONSOR_INSTANCE_ID/view/speakers"
@@ -54,7 +63,8 @@ object SessionizeApiImpl : SessionizeApi {
         it.status.isSuccess()
     }*/
 
-    override suspend fun sendFeedback(sessionId: String, rating: Int, comment: String?): Boolean = true /*client.submitForm<HttpResponse>(formParameters = Parameters.build {
+    override suspend fun sendFeedback(sessionId: String, rating: Int, comment: String?): Boolean =
+        true /*client.submitForm<HttpResponse>(formParameters = Parameters.build {
         append("rating", rating.toString())
         append("comment", comment.orEmpty())
     }) {
