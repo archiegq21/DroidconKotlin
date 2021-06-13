@@ -5,11 +5,11 @@ import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.stately.concurrency.AtomicBoolean
 
 class NotificationsApiMock : NotificationsApi {
-    private var initializeCalled:AtomicBoolean = AtomicBoolean(false)
-    var reminderCalled:AtomicBoolean = AtomicBoolean( false)
-    private var feedbackCalled:AtomicBoolean = AtomicBoolean( false)
-    private var reminderCancelled:AtomicBoolean = AtomicBoolean(false)
-    private var feedbackCancelled:AtomicBoolean = AtomicBoolean(false)
+    private var initializeCalled: AtomicBoolean = AtomicBoolean(false)
+    var reminderCalled: AtomicBoolean = AtomicBoolean(false)
+    private var feedbackCalled: AtomicBoolean = AtomicBoolean(false)
+    private var reminderCancelled: AtomicBoolean = AtomicBoolean(false)
+    private var feedbackCancelled: AtomicBoolean = AtomicBoolean(false)
 
     override fun scheduleReminderNotificationsForSessions(sessions: List<MySessions>) {
         reminderCalled.value = true

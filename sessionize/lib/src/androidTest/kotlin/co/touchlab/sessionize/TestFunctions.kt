@@ -12,4 +12,6 @@ actual fun testDbConnection(): SqlDriver {
     return AndroidSqliteDriver(DroidconDb.Schema, app, "droidcondb")
 }
 
-actual fun <T> runTest(block: suspend () -> T) { runBlocking { block() } }
+actual fun <T> runTest(block: suspend () -> T) {
+    runBlocking { block() }
+}

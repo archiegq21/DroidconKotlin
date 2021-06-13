@@ -13,29 +13,30 @@ import kotlinx.coroutines.withContext
 class FeedbackModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
     private var feedbackListener: FeedbackApi? = null
 
-    fun showFeedbackForPastSessions(listener: FeedbackApi){
-        if(feedbackEnabled) {
+    fun showFeedbackForPastSessions(listener: FeedbackApi) {
+        if (feedbackEnabled) {
             feedbackListener = listener
             requestNextFeedback()
         }
     }
 
-    fun requestNextFeedback(){
+    fun requestNextFeedback() {
         mainScope.launch {
             loadPastSessions()?.firstOrNull { it.endsAt.toLongMillis() < currentTimeMillis() }
-                    ?.let { feedbackListener?.generateFeedbackDialog(it) }
-                    ?: feedbackListener?.onError(FeedbackApi.FeedBackError.NoSessions)
+                ?.let { feedbackListener?.generateFeedbackDialog(it) }
+                ?: feedbackListener?.onError(FeedbackApi.FeedBackError.NoSessions)
         }
     }
 
-    private suspend fun loadPastSessions():List<MyPastSession>? = withContext(ServiceRegistry.backgroundDispatcher) {
-        if(feedbackEnabled) {
-            SessionizeDbHelper.sessionQueries.myPastSession().executeAsList()
-        } else
-            null
-    }
+    private suspend fun loadPastSessions(): List<MyPastSession>? =
+        withContext(ServiceRegistry.backgroundDispatcher) {
+            if (feedbackEnabled) {
+                SessionizeDbHelper.sessionQueries.myPastSession().executeAsList()
+            } else
+                null
+        }
 
-    fun finishedFeedback(sessionId:String, rating:Int, comment: String) {
+    fun finishedFeedback(sessionId: String, rating: Int, comment: String) {
         mainScope.launch {
             updateFeedback(sessionId, rating, comment)
             cancelFeedbackNotifications()
@@ -44,7 +45,8 @@ class FeedbackModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
         }
     }
 
-    private suspend fun updateFeedback(sessionId:String, rating:Int, comment: String) = withContext(ServiceRegistry.backgroundDispatcher){
-        SessionizeDbHelper.updateFeedback(rating.toLong(), comment, sessionId)
-    }
+    private suspend fun updateFeedback(sessionId: String, rating: Int, comment: String) =
+        withContext(ServiceRegistry.backgroundDispatcher) {
+            SessionizeDbHelper.updateFeedback(rating.toLong(), comment, sessionId)
+        }
 }

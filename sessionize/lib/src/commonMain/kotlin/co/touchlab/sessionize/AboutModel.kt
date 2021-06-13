@@ -16,7 +16,7 @@ object AboutModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
         proc(aboutLoad())
     }
 
-    private suspend fun aboutLoad() = withContext(AppContext.backgroundContext){
+    private suspend fun aboutLoad() = withContext(AppContext.backgroundContext) {
         AboutProc.parseAbout()
     }
 }

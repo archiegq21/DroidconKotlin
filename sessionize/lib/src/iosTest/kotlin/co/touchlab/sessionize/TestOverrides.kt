@@ -4,9 +4,9 @@ import kotlin.test.BeforeTest
 
 class StaticFileLoaderTestDarwin : StaticFileLoaderTest() {
     @BeforeTest
-    fun androidSetup(){
+    fun androidSetup() {
         setUp()
     }
 }
 
-class EventModelTestJVM: EventModelTest()
+class EventModelTestJVM : EventModelTest()

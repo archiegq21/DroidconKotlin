@@ -1,4 +1,4 @@
-package co.touchlab.sessionize
+package co.touchlab.sessionize.platform
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

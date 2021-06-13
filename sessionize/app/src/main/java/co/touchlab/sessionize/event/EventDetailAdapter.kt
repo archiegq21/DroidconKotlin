@@ -15,7 +15,8 @@ import co.touchlab.sessionize.databinding.ItemSpeakerSummaryBinding
 import com.squareup.picasso.Picasso
 import java.util.*
 
-class EventDetailAdapter(private val activity: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class EventDetailAdapter(private val activity: Activity) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var data = ArrayList<Detail>()
 
@@ -32,31 +33,43 @@ class EventDetailAdapter(private val activity: Activity) : RecyclerView.Adapter<
     }
 
     fun addSpeaker(speaker: UserAccount) {
-        data.add(SpeakerDetail(EntryType.TYPE_SPEAKER,
+        data.add(
+            SpeakerDetail(
+                EntryType.TYPE_SPEAKER,
                 speaker.profilePicture,
                 speaker.fullName,
                 speaker.tagLine,
                 speaker.bio,
-                speaker.id))
+                speaker.id
+            )
+        )
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (EntryType.values()[viewType]) {
             EntryType.TYPE_HEADER -> {
-                HeaderVH(ItemEventHeaderBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false))
+                HeaderVH(
+                    ItemEventHeaderBinding
+                        .inflate(LayoutInflater.from(parent.context), parent, false)
+                )
             }
             EntryType.TYPE_BODY -> {
-                TextVH(ItemEventTextBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false))
+                TextVH(
+                    ItemEventTextBinding
+                        .inflate(LayoutInflater.from(parent.context), parent, false)
+                )
             }
             EntryType.TYPE_INFO -> {
-                InfoVH(ItemEventInfoBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false))
+                InfoVH(
+                    ItemEventInfoBinding
+                        .inflate(LayoutInflater.from(parent.context), parent, false)
+                )
             }
             EntryType.TYPE_SPEAKER -> {
-                SpeakerVH(ItemSpeakerSummaryBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false))
+                SpeakerVH(
+                    ItemSpeakerSummaryBinding
+                        .inflate(LayoutInflater.from(parent.context), parent, false)
+                )
             }
         }
     }
@@ -92,28 +105,30 @@ class EventDetailAdapter(private val activity: Activity) : RecyclerView.Adapter<
 
                 if (!user.avatar.isNullOrBlank()) {
                     Picasso.get()
-                            .load(user.avatar)
-                            .noFade()
-                            .placeholder(R.drawable.circle_profile_placeholder)
-                            .into(binding.profileImage)
+                        .load(user.avatar)
+                        .noFade()
+                        .placeholder(R.drawable.circle_profile_placeholder)
+                        .into(binding.profileImage)
                 }
 
                 val companyName = if (user.company.isNullOrEmpty()) "" else user.company
-                binding.name.text = activity.getString(R.string.event_speaker_name).format(user.name, companyName)
+                binding.name.text =
+                    activity.getString(R.string.event_speaker_name).format(user.name, companyName)
 
                 binding.root.setOnClickListener {
-                    val direction = EventFragmentDirections.actionEventFragmentToSpeakerFragment(user.userId)
+                    val direction =
+                        EventFragmentDirections.actionEventFragmentToSpeakerFragment(user.userId)
                     binding.root.findNavController().navigate(direction)
                 }
-                if(user.bio == null)
-                    binding.bio.text =""
+                if (user.bio == null)
+                    binding.bio.text = ""
                 else
                     binding.bio.text = Html.fromHtml(user.bio.trim())
             }
         }
     }
 
-    enum class EntryType{
+    enum class EntryType {
         TYPE_HEADER,
         TYPE_BODY,
         TYPE_INFO,
@@ -130,13 +145,22 @@ class EventDetailAdapter(private val activity: Activity) : RecyclerView.Adapter<
 
     inner class TextDetail(type: EntryType, val text: String, val icon: Int) : Detail(type)
 
-    inner class SpeakerDetail(type: EntryType, val avatar: String?, val name: String, val company: String?, val bio: String?, val userId: String) : Detail(type)
+    inner class SpeakerDetail(
+        type: EntryType,
+        val avatar: String?,
+        val name: String,
+        val company: String?,
+        val bio: String?,
+        val userId: String
+    ) : Detail(type)
 
-    inner class HeaderVH(val binding: ItemEventHeaderBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class HeaderVH(val binding: ItemEventHeaderBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     inner class InfoVH(val binding: ItemEventInfoBinding) : RecyclerView.ViewHolder(binding.root)
 
     inner class TextVH(val binding: ItemEventTextBinding) : RecyclerView.ViewHolder(binding.root)
 
-    inner class SpeakerVH(val binding: ItemSpeakerSummaryBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class SpeakerVH(val binding: ItemSpeakerSummaryBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

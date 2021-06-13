@@ -33,8 +33,10 @@ class SettingsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LocalBroadcastManager.getInstance(AndroidAppContext.app).registerReceiver(changedSettingReciever,
-                IntentFilter(FeedbackDisabledNotificationName))
+        LocalBroadcastManager.getInstance(AndroidAppContext.app).registerReceiver(
+            changedSettingReciever,
+            IntentFilter(FeedbackDisabledNotificationName)
+        )
     }
 
     private val changedSettingReciever = object : BroadcastReceiver() {
@@ -44,12 +46,15 @@ class SettingsFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        LocalBroadcastManager.getInstance(AndroidAppContext.app).unregisterReceiver(changedSettingReciever)
+        LocalBroadcastManager.getInstance(AndroidAppContext.app)
+            .unregisterReceiver(changedSettingReciever)
         super.onDestroy()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
 
         val adapter = SettingsAdapter(requireActivity())
@@ -69,15 +74,17 @@ class SettingsFragment : Fragment() {
         val adapter = SettingsAdapter(requireActivity())
 
         //SettingsModel.loadSettingsInfo {
-        adapter.addSwitchRow("Enable Feedback",
-                R.drawable.baseline_feedback_24,
-                ServiceRegistry.appSettings.getBoolean(FEEDBACK_ENABLED, true)
+        adapter.addSwitchRow(
+            "Enable Feedback",
+            R.drawable.baseline_feedback_24,
+            ServiceRegistry.appSettings.getBoolean(FEEDBACK_ENABLED, true)
         ) { _, isChecked ->
             settingsViewModel.settingsModel.setFeedbackSettingEnabled(isChecked)
         }
-        adapter.addSwitchRow("Enable Reminders",
-                R.drawable.baseline_insert_invitation_24,
-                ServiceRegistry.appSettings.getBoolean(REMINDERS_ENABLED, true)
+        adapter.addSwitchRow(
+            "Enable Reminders",
+            R.drawable.baseline_insert_invitation_24,
+            ServiceRegistry.appSettings.getBoolean(REMINDERS_ENABLED, true)
         ) { _, isChecked ->
             settingsViewModel.settingsModel.setRemindersSettingEnabled(isChecked)
         }

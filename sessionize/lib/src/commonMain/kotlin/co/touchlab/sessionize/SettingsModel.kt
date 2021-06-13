@@ -6,10 +6,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
 class SettingsModel(
-        private val notificationsApi: NotificationsApi,
-        coroutineDispatcher: CoroutineDispatcher) : BaseModel(coroutineDispatcher) {
+    private val notificationsApi: NotificationsApi,
+    coroutineDispatcher: CoroutineDispatcher
+) : BaseModel(coroutineDispatcher) {
 
-    fun setRemindersSettingEnabled(enabled:Boolean) = mainScope.launch {
+    fun setRemindersSettingEnabled(enabled: Boolean) = mainScope.launch {
         NotificationsModel.remindersEnabled = enabled
 
         if (enabled && !NotificationsModel.notificationsEnabled) {
@@ -18,12 +19,12 @@ class SettingsModel(
                     NotificationsModel.recreateReminderNotifications()
                 }
             }
-        }else{
+        } else {
             NotificationsModel.recreateReminderNotifications()
         }
     }
 
-    fun setFeedbackSettingEnabled(enabled:Boolean) = mainScope.launch {
+    fun setFeedbackSettingEnabled(enabled: Boolean) = mainScope.launch {
         NotificationsModel.feedbackEnabled = enabled
 
         if (enabled && !NotificationsModel.notificationsEnabled) {
@@ -32,7 +33,7 @@ class SettingsModel(
                     NotificationsModel.recreateFeedbackNotifications()
                 }
             }
-        }else{
+        } else {
             NotificationsModel.recreateFeedbackNotifications()
         }
     }

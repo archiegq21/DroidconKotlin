@@ -9,19 +9,19 @@ import co.touchlab.sessionize.platform.currentTimeMillis
 import kotlin.native.concurrent.ThreadLocal
 
 data class DaySchedule(
-        val dayString: String,
-        val hourBlock: List<HourBlock>
+    val dayString: String,
+    val hourBlock: List<HourBlock>
 )
 
 data class HourBlock(
-        //Need to set this after sorting, which needs dates
-        var hourStringDisplay: String,
-        val timeBlock: SessionWithRoom,
-        val startDateLong: Long,
-        val endDateLong: Long,
-        val timeGap: Boolean,
-        val speakerText: String
-){
+    //Need to set this after sorting, which needs dates
+    var hourStringDisplay: String,
+    val timeBlock: SessionWithRoom,
+    val startDateLong: Long,
+    val endDateLong: Long,
+    val timeGap: Boolean,
+    val speakerText: String
+) {
     fun rowType(): RowType = if (this.timeBlock.isBlock()) {
         RowType.Block
     } else {
@@ -41,7 +41,8 @@ data class HourBlock(
                         this.timeBlock.id != it.timeBlock.id
             }) {
                 if (this.startDateLong < other.endDateLong &&
-                        this.endDateLong > other.startDateLong)
+                    this.endDateLong > other.startDateLong
+                )
                     return true
             }
         }
@@ -125,13 +126,16 @@ fun formatHourBlocks(inList: List<SessionWithRoom>): HashMap<String, ArrayList<H
         val startTime = TIME_FORMAT.formatConferenceTZ(startDateObj)
         val newHourDisplay = lastHourDisplay != startTime
 
-        blockHourList.add(HourBlock(
+        blockHourList.add(
+            HourBlock(
                 hourStringDisplay = if (newHourDisplay) startTime else "",
                 timeBlock = timeBlock,
                 startDateLong = timeBlock.startsAt.toLongMillis(),
                 endDateLong = timeBlock.endsAt.toLongMillis(),
                 timeGap = newHourDisplay,
-                speakerText = timeBlock.allNames.orEmpty()))
+                speakerText = timeBlock.allNames.orEmpty()
+            )
+        )
         lastHourDisplay = startTime
     }
     return dateWithBlocksTreeMap
@@ -142,8 +146,10 @@ fun convertMapToDaySchedule(dateWithBlocksTreeMap: HashMap<String, ArrayList<Hou
 
     for (dateString in dateWithBlocksTreeMap.keys) {
         val hourBlocksMap = dateWithBlocksTreeMap.get(dateString)
-        val daySchedule = DaySchedule(dateString,
-                hourBlocksMap!!)
+        val daySchedule = DaySchedule(
+            dateString,
+            hourBlocksMap!!
+        )
         dayScheduleList.add(daySchedule)
     }
 

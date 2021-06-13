@@ -20,24 +20,25 @@ import kotlin.coroutines.CoroutineContext
  */
 @UseExperimental(InternalCoroutinesApi::class)
 abstract class BaseQueryModelView<Q : Any, VT>(
-        query: Query<Q>,
-        extractData: (Query<Q>) -> VT,
-        mainContext: CoroutineContext) : BaseModel(mainContext) {
+    query: Query<Q>,
+    extractData: (Query<Q>) -> VT,
+    mainContext: CoroutineContext
+) : BaseModel(mainContext) {
 
     init {
         ensureNeverFrozen()
         mainScope.launch {
             query.asFlow()
-                    .map {
-                        assertNotMainThread()
-                        extractData(it)
+                .map {
+                    assertNotMainThread()
+                    extractData(it)
+                }
+                .flowOn(ServiceRegistry.backgroundDispatcher)
+                .collect { vt ->
+                    view?.let {
+                        it.update(vt)
                     }
-                    .flowOn(ServiceRegistry.backgroundDispatcher)
-                    .collect { vt ->
-                        view?.let {
-                            it.update(vt)
-                        }
-                    }
+                }
 
         }
     }
@@ -55,9 +56,9 @@ abstract class BaseQueryModelView<Q : Any, VT>(
 
     interface View<VT> {
         suspend fun update(data: VT)
-        fun error(t:Throwable){
+        fun error(t: Throwable) {
             printThrowable(t)
-            ServiceRegistry.softExceptionCallback(t, t.message?:"(Unknown View Error)")
+            ServiceRegistry.softExceptionCallback(t, t.message ?: "(Unknown View Error)")
         }
     }
 }

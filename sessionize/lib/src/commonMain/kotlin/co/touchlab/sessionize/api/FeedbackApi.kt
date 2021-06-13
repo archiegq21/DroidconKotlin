@@ -4,11 +4,12 @@ import co.touchlab.droidcon.db.MyPastSession
 
 interface FeedbackApi {
 
-    enum class FeedBackError{
+    enum class FeedBackError {
         NoSessions
     }
+
     fun generateFeedbackDialog(session: MyPastSession)
 
-    fun onError(error:FeedBackError)
+    fun onError(error: FeedBackError)
 
 }

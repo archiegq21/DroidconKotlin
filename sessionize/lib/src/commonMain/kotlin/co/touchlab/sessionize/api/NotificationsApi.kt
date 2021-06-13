@@ -5,9 +5,9 @@ import co.touchlab.droidcon.db.MySessions
 
 interface NotificationsApi {
 
-    fun scheduleReminderNotificationsForSessions(sessions:List<MySessions>)
+    fun scheduleReminderNotificationsForSessions(sessions: List<MySessions>)
 
-    fun scheduleFeedbackNotificationsForSessions(sessions:List<MySessions>)
+    fun scheduleFeedbackNotificationsForSessions(sessions: List<MySessions>)
 
     fun cancelReminderNotifications(andDismissals: Boolean)
 

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import co.touchlab.sessionize.SponsorSessionModel
 
-class SponsorSessionViewModel(): ViewModel(){
+class SponsorSessionViewModel() : ViewModel() {
     val sponsorSessionModel = SponsorSessionModel
 }
 

@@ -15,7 +15,11 @@ import java.util.concurrent.atomic.AtomicReference
 
 actual fun currentTimeMillis(): Long = System.currentTimeMillis()
 
-private val btfHandler:Handler? = try{Handler(Looper.getMainLooper())}catch (e:Throwable){null}
+private val btfHandler: Handler? = try {
+    Handler(Looper.getMainLooper())
+} catch (e: Throwable) {
+    null
+}
 
 internal actual val mainThread: Boolean
     get() = Looper.getMainLooper() === Looper.myLooper()
@@ -32,9 +36,9 @@ object AndroidAppContext {
             try {
                 aref.set(backJob())
                 val h = btfHandler
-                if(h == null){
+                if (h == null) {
                     mainJob(aref.get())
-                }else{
+                } else {
                     h.post {
                         mainJob(aref.get())
                     }

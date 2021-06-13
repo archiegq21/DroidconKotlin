@@ -18,7 +18,7 @@ class StaticFileLoaderTestJVM : StaticFileLoaderTest() {
 
         ServiceRegistry.initLambdas({ name, type ->
             loadAsset("$name.$type")
-        }, { s: String -> Unit }, {e:Throwable, message:String ->
+        }, { s: String -> Unit }, { e: Throwable, message: String ->
             Log.e("StaticFileLoaderTest", message, e)
         })
 
@@ -33,9 +33,9 @@ class StaticFileLoaderTestJVM : StaticFileLoaderTest() {
 class EventModelTestJVM : EventModelTest()
 
 private fun loadAsset(name: String) = AndroidAppContext.app.assets
-        .open(name, Context.MODE_PRIVATE)
-        .bufferedReader()
-        .use { it.readText() }
+    .open(name, Context.MODE_PRIVATE)
+    .bufferedReader()
+    .use { it.readText() }
 
 //@RunWith(AndroidJUnit4::class)
 //class SettingsModelTestJVM : SettingsModelTest()

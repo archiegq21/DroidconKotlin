@@ -15,12 +15,13 @@ import kotlinx.coroutines.withContext
 import kotlin.math.max
 
 class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInfo>(
-        sessionQueries.sessionById(sessionId),
-        { q ->
-            val session = q.executeAsOne()
-            collectSessionInfo(session)
-        },
-        ServiceRegistry.coroutinesDispatcher) {
+    sessionQueries.sessionById(sessionId),
+    { q ->
+        val session = q.executeAsOne()
+        collectSessionInfo(session)
+    },
+    ServiceRegistry.coroutinesDispatcher
+) {
 
     init {
         ServiceRegistry.clLogCallback("init EventModel($sessionId)")
@@ -52,31 +53,35 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
         }
     }
 
-    internal suspend fun callUpdateRsvp(rsvp: Boolean, localSessionId: String) = withContext(ServiceRegistry.backgroundDispatcher){
-        sessionQueries.updateRsvp(if (rsvp) {
-            1
-        } else {
-            0
-        }, localSessionId)
-    }
-
-    private suspend fun sendAnalytics(sessionId: String, rsvp: Boolean) = withContext(ServiceRegistry.backgroundDispatcher) {
-        try {
-            val session = sessionQueries.sessionById(sessionId).executeAsOne()
-            val params = HashMap<String, Any>()
-            val analyticsDateFormat = DateFormatHelper("MM_dd_HH_mm")
-            params["slot"] = analyticsDateFormat.formatConferenceTZ(session.startsAt)
-            params["sessionId"] = sessionId
-            params["count"] = if (rsvp) {
-                1
-            } else {
-                -1
-            }
-            ServiceRegistry.analyticsApi.logEvent("RSVP_EVENT", params)
-        } catch (e: Exception) {
-            printThrowable(e)
+    internal suspend fun callUpdateRsvp(rsvp: Boolean, localSessionId: String) =
+        withContext(ServiceRegistry.backgroundDispatcher) {
+            sessionQueries.updateRsvp(
+                if (rsvp) {
+                    1
+                } else {
+                    0
+                }, localSessionId
+            )
         }
-    }
+
+    private suspend fun sendAnalytics(sessionId: String, rsvp: Boolean) =
+        withContext(ServiceRegistry.backgroundDispatcher) {
+            try {
+                val session = sessionQueries.sessionById(sessionId).executeAsOne()
+                val params = HashMap<String, Any>()
+                val analyticsDateFormat = DateFormatHelper("MM_dd_HH_mm")
+                params["slot"] = analyticsDateFormat.formatConferenceTZ(session.startsAt)
+                params["sessionId"] = sessionId
+                params["count"] = if (rsvp) {
+                    1
+                } else {
+                    -1
+                }
+                ServiceRegistry.analyticsApi.logEvent("RSVP_EVENT", params)
+            } catch (e: Exception) {
+                printThrowable(e)
+            }
+        }
 }
 
 internal fun collectSessionInfo(session: Session): SessionInfo {
@@ -97,7 +102,8 @@ internal fun Session.conflict(others: List<MySessions>): Boolean {
                     this.id != it.id
         }) {
             if (this.startsAt.toLongMillis() < other.endsAt.toLongMillis() &&
-                    this.endsAt.toLongMillis() > other.startsAt.toLongMillis())
+                this.endsAt.toLongMillis() > other.startsAt.toLongMillis()
+            )
                 return true
         }
     }
@@ -106,9 +112,9 @@ internal fun Session.conflict(others: List<MySessions>): Boolean {
 }
 
 data class SessionInfo(
-        val session: Session,
-        val speakers: List<UserAccount>,
-        val conflict: Boolean
+    val session: Session,
+    val speakers: List<UserAccount>,
+    val conflict: Boolean
 )
 
 fun SessionInfo.isNow(): Boolean {

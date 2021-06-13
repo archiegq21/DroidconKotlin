@@ -32,7 +32,11 @@ class FeedbackDialog : DialogFragment(), FeedbackView.FeedbackViewListener {
         private const val sessionIdName = "sessionId"
         private const val sessionTitleName = "sessionTitle"
 
-        fun newInstance(sessionId: String, sessionTitle: String, feedbackManager: FeedbackManager): FeedbackDialog {
+        fun newInstance(
+            sessionId: String,
+            sessionTitle: String,
+            feedbackManager: FeedbackManager
+        ): FeedbackDialog {
             val bundle = Bundle()
             bundle.putString(sessionIdName, sessionId)
             bundle.putString(sessionTitleName, sessionTitle)

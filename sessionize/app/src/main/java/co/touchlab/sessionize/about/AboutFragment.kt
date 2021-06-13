@@ -18,9 +18,13 @@ class AboutFragment : Fragment() {
 
     private var binding by viewBindingLifecycle<FragmentAboutBinding>()
 
-    lateinit var adapter:AboutInfoAdapter
+    lateinit var adapter: AboutInfoAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentAboutBinding.inflate(inflater, container, false)
         binding.recycler.apply {
             adapter = AboutInfoAdapter()
@@ -36,16 +40,16 @@ class AboutFragment : Fragment() {
 
     inner class AboutInfoAdapter : RecyclerView.Adapter<AboutInfoViewHolder>() {
 
-        var infoList:List<AboutInfo> = emptyList()
+        var infoList: List<AboutInfo> = emptyList()
 
-        fun updateDate(data:List<AboutInfo>){
+        fun updateDate(data: List<AboutInfo>) {
             infoList = data
             notifyDataSetChanged()
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AboutInfoViewHolder {
             val binding = ItemAboutInfoBinding
-                    .inflate(LayoutInflater.from(parent.context), parent, false)
+                .inflate(LayoutInflater.from(parent.context), parent, false)
             return AboutInfoViewHolder(binding)
         }
 
@@ -58,10 +62,10 @@ class AboutFragment : Fragment() {
                 aboutBinkyBody.visibility = View.GONE
                 header.text = aboutInfo.title
                 body.text = aboutInfo.detail
-                if(!aboutInfo.icon.isNullOrBlank()) {
+                if (!aboutInfo.icon.isNullOrBlank()) {
                     logo.setImageResource(finDrawableId(requireContext(), aboutInfo.icon))
                     logo.visibility = View.VISIBLE
-                }else{
+                } else {
                     logo.visibility = View.GONE
                 }
             }
@@ -69,6 +73,7 @@ class AboutFragment : Fragment() {
 
     }
 
-    class AboutInfoViewHolder(val binding: ItemAboutInfoBinding):RecyclerView.ViewHolder(binding.root)
+    class AboutInfoViewHolder(val binding: ItemAboutInfoBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }
 

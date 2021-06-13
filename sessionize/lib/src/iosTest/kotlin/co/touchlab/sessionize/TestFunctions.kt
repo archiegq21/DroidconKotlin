@@ -6,6 +6,8 @@ import kotlinx.coroutines.runBlocking
 
 actual fun testDbConnection(): SqlDriver = defaultDriver()
 
-actual fun <T> runTest(block: suspend () -> T) { runBlocking { block() } }
+actual fun <T> runTest(block: suspend () -> T) {
+    runBlocking { block() }
+}
 
 fun accessServiceRegistry() = ServiceRegistry

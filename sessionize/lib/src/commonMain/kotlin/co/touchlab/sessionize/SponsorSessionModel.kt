@@ -40,13 +40,14 @@ object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
         }
     }
 
-    internal suspend fun loadSponsorDetailData(sponsor: Sponsor): Pair<String, List<UserAccount>> = withContext(ServiceRegistry.backgroundDispatcher){
-        val id = sponsor.sponsorId!!
-        Pair(
-                sponsorSessionQueries.sponsorSessionById(id).executeAsOne().description?:"",
+    internal suspend fun loadSponsorDetailData(sponsor: Sponsor): Pair<String, List<UserAccount>> =
+        withContext(ServiceRegistry.backgroundDispatcher) {
+            val id = sponsor.sponsorId!!
+            Pair(
+                sponsorSessionQueries.sponsorSessionById(id).executeAsOne().description ?: "",
                 userAccountQueries.selectBySession(id).executeAsList()
-        )
-    }
+            )
+        }
 
     private suspend fun sendAnalytics() {
 
@@ -74,7 +75,7 @@ object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
 }
 
 data class SponsorSessionInfo(
-        val sponsor: Sponsor,
-        val sessionDetail: String,
-        val speakers: List<UserAccount>
+    val sponsor: Sponsor,
+    val sessionDetail: String,
+    val speakers: List<UserAccount>
 )
