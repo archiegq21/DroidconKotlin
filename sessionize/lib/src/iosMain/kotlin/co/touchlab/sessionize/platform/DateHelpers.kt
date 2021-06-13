@@ -30,8 +30,10 @@ actual class DateFormatHelper actual constructor(format: String) {
 
     }
 
-    actual fun toConferenceDate(s: String): Date  = Date(dateFormatterConference.dateFromString(s)!!)
-    actual fun toLocalDate(s: String): Date  = Date(dateFormatterLocal.dateFromString(s)!!)
-    actual fun formatConferenceTZ(d: Date): String = dateFormatterConference.stringFromDate(d.iosDate)
+    actual fun toConferenceDate(s: String): Date = Date(dateFormatterConference.dateFromString(s)!!)
+    actual fun toLocalDate(s: String): Date = Date(dateFormatterLocal.dateFromString(s)!!)
+    actual fun formatConferenceTZ(d: Date): String =
+        dateFormatterConference.stringFromDate(d.iosDate)
+
     actual fun formatLocalTZ(d: Date): String = dateFormatterLocal.stringFromDate(d.iosDate)
 }

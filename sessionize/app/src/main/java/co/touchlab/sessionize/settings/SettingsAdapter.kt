@@ -10,7 +10,8 @@ import co.touchlab.sessionize.databinding.ItemSettingSwitchBinding
 import co.touchlab.sessionize.databinding.ItemSettingTextBinding
 
 
-class SettingsAdapter(private val activity: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SettingsAdapter(private val activity: Activity) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var data = ArrayList<Detail>()
 
@@ -19,7 +20,12 @@ class SettingsAdapter(private val activity: Activity) : RecyclerView.Adapter<Rec
         data.add(TextDetail(EntryType.TYPE_BODY, description, icon))
     }
 
-    fun addSwitchRow(description: String, icon: Int, isChecked: Boolean, listener: CompoundButton.OnCheckedChangeListener) {
+    fun addSwitchRow(
+        description: String,
+        icon: Int,
+        isChecked: Boolean,
+        listener: CompoundButton.OnCheckedChangeListener
+    ) {
         data.add(SwitchDetail(EntryType.TYPE_SWITCH, description, icon, isChecked, listener))
     }
 
@@ -30,13 +36,31 @@ class SettingsAdapter(private val activity: Activity) : RecyclerView.Adapter<Rec
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (EntryType.values()[viewType]) {
             EntryType.TYPE_BODY -> {
-                TextVH(ItemSettingTextBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                TextVH(
+                    ItemSettingTextBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
             }
             EntryType.TYPE_SWITCH -> {
-                SwitchVH(ItemSettingSwitchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                SwitchVH(
+                    ItemSettingSwitchBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
             }
             EntryType.TYPE_BUTTON -> {
-                ButtonVH(ItemSettingTextBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                ButtonVH(
+                    ItemSettingTextBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
             }
         }
     }
@@ -95,11 +119,27 @@ class SettingsAdapter(private val activity: Activity) : RecyclerView.Adapter<Rec
     }
 
     inner class TextDetail(type: EntryType, val text: String, val icon: Int) : Detail(type)
-    inner class ButtonDetail(type: EntryType, val text: String, val icon: Int, val listener: View.OnClickListener) : Detail(type)
-    inner class SwitchDetail(type: EntryType, val text: String, val icon: Int, var isChecked: Boolean, var listener: CompoundButton.OnCheckedChangeListener) : Detail(type)
+    inner class ButtonDetail(
+        type: EntryType,
+        val text: String,
+        val icon: Int,
+        val listener: View.OnClickListener
+    ) : Detail(type)
 
-    inner class SwitchVH(val binding: ItemSettingSwitchBinding) : RecyclerView.ViewHolder(binding.root)
-    inner class ButtonVH(val binding: ItemSettingTextBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class SwitchDetail(
+        type: EntryType,
+        val text: String,
+        val icon: Int,
+        var isChecked: Boolean,
+        var listener: CompoundButton.OnCheckedChangeListener
+    ) : Detail(type)
+
+    inner class SwitchVH(val binding: ItemSettingSwitchBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    inner class ButtonVH(val binding: ItemSettingTextBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
     inner class TextVH(val binding: ItemSettingTextBinding) : RecyclerView.ViewHolder(binding.root)
 
 }

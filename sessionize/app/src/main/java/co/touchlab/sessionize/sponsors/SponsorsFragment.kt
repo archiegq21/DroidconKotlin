@@ -27,14 +27,18 @@ class SponsorsFragment : Fragment() {
     private var binding by viewBindingLifecycle<FragmentSponsorBinding>()
 
     lateinit var adapter: SponsorGroupAdapter
-    lateinit var sponsorViewModel:SponsorViewModel
+    lateinit var sponsorViewModel: SponsorViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sponsorViewModel = SponsorViewModel()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentSponsorBinding.inflate(inflater, container, false)
 
         sponsorViewModel.load({
@@ -43,9 +47,9 @@ class SponsorsFragment : Fragment() {
         }) {
             activity?.let {
                 Toast.makeText(
-                        it,
-                        "Network error. Try again Later.",
-                        Toast.LENGTH_LONG
+                    it,
+                    "Network error. Try again Later.",
+                    Toast.LENGTH_LONG
                 ).show()
             }
 
@@ -62,8 +66,10 @@ class SponsorsFragment : Fragment() {
         var sponsorGroupItems: List<SponsorGroup> = emptyList()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SponsorGroupViewHolder {
-            return SponsorGroupViewHolder(ItemSponsorGroupBinding
-                    .inflate(LayoutInflater.from(parent.context), parent, false))
+            return SponsorGroupViewHolder(
+                ItemSponsorGroupBinding
+                    .inflate(LayoutInflater.from(parent.context), parent, false)
+            )
         }
 
         override fun getItemCount(): Int = sponsorGroupItems.size
@@ -75,9 +81,9 @@ class SponsorsFragment : Fragment() {
             val layoutInflater = LayoutInflater.from(activity)
 
             val itemLayout = if (
-                    sponsorGroup.groupName.contains("Gold") ||
-                    sponsorGroup.groupName.contains("Plat") ||
-                    sponsorGroup.groupName.contains("Iridium")
+                sponsorGroup.groupName.contains("Gold") ||
+                sponsorGroup.groupName.contains("Plat") ||
+                sponsorGroup.groupName.contains("Iridium")
             ) {
                 R.layout.item_sponsor_pic
             } else {
@@ -85,7 +91,8 @@ class SponsorsFragment : Fragment() {
             }
 
             for (sponsor in sponsorGroup.sponsors) {
-                val iv = layoutInflater.inflate(itemLayout, holder.binding.flowGroup, false) as ImageView
+                val iv =
+                    layoutInflater.inflate(itemLayout, holder.binding.flowGroup, false) as ImageView
                 Picasso.get().load(sponsor.icon).into(iv)
                 holder.binding.flowGroup.addView(iv)
                 iv.setOnClickListener {
@@ -99,7 +106,11 @@ class SponsorsFragment : Fragment() {
                     } else {
                         sponsor.sponsorId?.let {
                             SponsorSessionModel.sponsor = sponsor
-                            val direction = SponsorsFragmentDirections.actionSponsorsFragmentToSponsorSessionFragment(it, sponsor.groupName)
+                            val direction =
+                                SponsorsFragmentDirections.actionSponsorsFragmentToSponsorSessionFragment(
+                                    it,
+                                    sponsor.groupName
+                                )
                             view!!.findNavController().navigate(direction)
                         }
                     }
@@ -108,5 +119,6 @@ class SponsorsFragment : Fragment() {
         }
     }
 
-    class SponsorGroupViewHolder(val binding: ItemSponsorGroupBinding) : RecyclerView.ViewHolder(binding.root)
+    class SponsorGroupViewHolder(val binding: ItemSponsorGroupBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

@@ -25,7 +25,8 @@ fun defaultDriver(): SqlDriver = NativeSqliteDriver(DroidconDb.Schema, "sessioni
 fun defaultSettings(): Settings = AppleSettings.Factory().create("DROIDCON_SETTINGS")
 
 private fun getDirPath(folder: String): String {
-    val paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, true);
+    val paths =
+        NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, true);
     val documentsDirectory = paths[0] as String;
 
     val databaseDirectory = documentsDirectory + "/$folder"
@@ -42,7 +43,7 @@ private fun getDatabaseDirPath(): String = getDirPath("databases")
 
 @Suppress("unused")
 fun createAnalyticsApiImpl(analyticsCallback: (name: String, params: Map<String, Any>) -> Unit): AnalyticsApi {
-    return object: AnalyticsApi {
+    return object : AnalyticsApi {
         override fun logEvent(name: String, params: Map<String, Any>) {
             analyticsCallback(name, params)
         }
@@ -54,4 +55,5 @@ actual fun printThrowable(t: Throwable) {
     t.printStackTrace()
 }
 
-actual fun backgroundDispatcher():CoroutineDispatcher = Dispatchers.Default //newFixedThreadPoolContext(1, "arst")
+actual fun backgroundDispatcher(): CoroutineDispatcher =
+    Dispatchers.Default //newFixedThreadPoolContext(1, "arst")

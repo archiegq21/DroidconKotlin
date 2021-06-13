@@ -6,11 +6,11 @@ import co.touchlab.sessionize.db.SessionizeDbHelper.userAccountQueries
 import co.touchlab.sessionize.db.sessions
 
 class SpeakerModel(speakerId: String) : BaseQueryModelView<UserAccount, UserAccount>(
-        userAccountQueries.selectById(speakerId),
-        {
-            it.executeAsOne()
-        },
-        ServiceRegistry.coroutinesDispatcher
+    userAccountQueries.selectById(speakerId),
+    {
+        it.executeAsOne()
+    },
+    ServiceRegistry.coroutinesDispatcher
 ) {
     init {
         ServiceRegistry.clLogCallback("init SpeakerModel($speakerId)")
@@ -35,16 +35,25 @@ class SpeakerModel(speakerId: String) : BaseQueryModelView<UserAccount, UserAcco
         if (!it.bio.isNullOrBlank())
             infoSections.add(SpeakerInfo(InfoType.Profile, it.bio!!))
 
-        return SpeakerUiData(it, it.fullName, it.tagLine, it.profilePicture, infoSections, it.sessions())
+        return SpeakerUiData(
+            it,
+            it.fullName,
+            it.tagLine,
+            it.profilePicture,
+            infoSections,
+            it.sessions()
+        )
     }
 }
 
-data class SpeakerUiData(val user: UserAccount,
-                         val fullName: String,
-                         val company: String?,
-                         val profilePicture: String?,
-                         val infoRows: List<SpeakerInfo>,
-                         val sessions: List<Session>)
+data class SpeakerUiData(
+    val user: UserAccount,
+    val fullName: String,
+    val company: String?,
+    val profilePicture: String?,
+    val infoRows: List<SpeakerInfo>,
+    val sessions: List<Session>
+)
 
 data class SpeakerInfo(val type: InfoType, val info: String)
 

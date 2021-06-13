@@ -1,6 +1,6 @@
 package co.touchlab.sessionize
 
-val SPONSORS ="""
+val SPONSORS = """
 [
   {
     "groupName": "Gold",

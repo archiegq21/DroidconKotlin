@@ -6,8 +6,8 @@ import kotlinx.coroutines.launch
 
 class SponsorViewModel {
     fun load(
-            proc: (List<SponsorGroup>) -> Unit,
-            error: (ex: Throwable) -> Unit
+        proc: (List<SponsorGroup>) -> Unit,
+        error: (ex: Throwable) -> Unit
     ) {
         // TODO: Replace this with `viewModelScope`
         //  this should only be temporary.

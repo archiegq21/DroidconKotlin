@@ -12,9 +12,9 @@ import co.touchlab.sessionize.R
 import co.touchlab.sessionize.databinding.FeedbackViewBinding
 
 class FeedbackView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private val binding by lazy {
@@ -36,7 +36,7 @@ class FeedbackView @JvmOverloads constructor(
                 submitButton.isEnabled = true
                 feedbackViewListener?.ratingSelected(FeedbackRating.Good)
                 goodButton.background.colorFilter = BlendModeColorFilterCompat
-                        .createBlendModeColorFilterCompat(Color.BLUE, BlendModeCompat.SRC_IN)
+                    .createBlendModeColorFilterCompat(Color.BLUE, BlendModeCompat.SRC_IN)
                 setDoneButtonEnabled(true)
             }
             okButton.setOnClickListener {
@@ -44,7 +44,7 @@ class FeedbackView @JvmOverloads constructor(
                 submitButton.isEnabled = true
                 feedbackViewListener?.ratingSelected(FeedbackRating.Ok)
                 okButton.background.colorFilter = BlendModeColorFilterCompat
-                        .createBlendModeColorFilterCompat(Color.BLUE, BlendModeCompat.SRC_IN)
+                    .createBlendModeColorFilterCompat(Color.BLUE, BlendModeCompat.SRC_IN)
                 setDoneButtonEnabled(true)
             }
             badButton.setOnClickListener {
@@ -52,7 +52,7 @@ class FeedbackView @JvmOverloads constructor(
                 submitButton.isEnabled = true
                 feedbackViewListener?.ratingSelected(FeedbackRating.Bad)
                 badButton.background.colorFilter = BlendModeColorFilterCompat
-                        .createBlendModeColorFilterCompat(Color.BLUE, BlendModeCompat.SRC_IN)
+                    .createBlendModeColorFilterCompat(Color.BLUE, BlendModeCompat.SRC_IN)
                 setDoneButtonEnabled(true)
             }
 
@@ -73,17 +73,18 @@ class FeedbackView @JvmOverloads constructor(
     }
 
     fun setSessionTitle(sessionTitle: String) {
-        findViewById<TextView>(R.id.titleTextView)?.text = "What did you think of \"${sessionTitle}\"?"
+        findViewById<TextView>(R.id.titleTextView)?.text =
+            "What did you think of \"${sessionTitle}\"?"
     }
 
     private fun resetRatingButtons() {
         binding.run {
             goodButton.background.colorFilter = BlendModeColorFilterCompat
-                    .createBlendModeColorFilterCompat(Color.GRAY, BlendModeCompat.SRC_IN)
+                .createBlendModeColorFilterCompat(Color.GRAY, BlendModeCompat.SRC_IN)
             okButton.background.colorFilter = BlendModeColorFilterCompat
-                    .createBlendModeColorFilterCompat(Color.GRAY, BlendModeCompat.SRC_IN)
+                .createBlendModeColorFilterCompat(Color.GRAY, BlendModeCompat.SRC_IN)
             badButton.background.colorFilter = BlendModeColorFilterCompat
-                    .createBlendModeColorFilterCompat(Color.GRAY, BlendModeCompat.SRC_IN)
+                .createBlendModeColorFilterCompat(Color.GRAY, BlendModeCompat.SRC_IN)
         }
     }
 
@@ -91,9 +92,11 @@ class FeedbackView @JvmOverloads constructor(
         binding.run {
             submitButton.isEnabled = enabled
             if (enabled) {
-                submitButton.background = resources.getDrawable(R.drawable.rounded_blue_button, null)
+                submitButton.background =
+                    resources.getDrawable(R.drawable.rounded_blue_button, null)
             } else {
-                submitButton.background = resources.getDrawable(R.drawable.rounded_gray_button, null)
+                submitButton.background =
+                    resources.getDrawable(R.drawable.rounded_gray_button, null)
             }
         }
     }

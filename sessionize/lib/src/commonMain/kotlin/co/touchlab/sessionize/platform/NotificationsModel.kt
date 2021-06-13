@@ -44,8 +44,11 @@ object NotificationsModel {
         cancelFeedbackNotifications()
     }
 
-    fun cancelFeedbackNotifications() = ServiceRegistry.notificationsApi.cancelFeedbackNotifications()
-    fun cancelReminderNotifications(andDismissals: Boolean) = ServiceRegistry.notificationsApi.cancelReminderNotifications(andDismissals)
+    fun cancelFeedbackNotifications() =
+        ServiceRegistry.notificationsApi.cancelFeedbackNotifications()
+
+    fun cancelReminderNotifications(andDismissals: Boolean) =
+        ServiceRegistry.notificationsApi.cancelReminderNotifications(andDismissals)
 
     suspend fun recreateReminderNotifications() {
         cancelReminderNotifications(false)
@@ -67,14 +70,19 @@ object NotificationsModel {
         }
     }
 
-    private suspend fun mySessions(): List<MySessions> = withContext(ServiceRegistry.backgroundDispatcher) {
-        sessionQueries.mySessions().executeAsList()
-    }
+    private suspend fun mySessions(): List<MySessions> =
+        withContext(ServiceRegistry.backgroundDispatcher) {
+            sessionQueries.mySessions().executeAsList()
+        }
 
-    fun getReminderTimeFromSession(session: MySessions): Long = session.startsAt.toLongMillis() - Durations.TEN_MINS_MILLIS
+    fun getReminderTimeFromSession(session: MySessions): Long =
+        session.startsAt.toLongMillis() - Durations.TEN_MINS_MILLIS
+
     fun getReminderNotificationTitle(session: MySessions) = "Upcoming Event in ${session.roomName}"
     fun getReminderNotificationMessage(session: MySessions) = "${session.title} is starting soon."
-    fun getFeedbackTimeFromSession(session: MySessions): Long = session.endsAt.toLongMillis() + Durations.TEN_MINS_MILLIS
+    fun getFeedbackTimeFromSession(session: MySessions): Long =
+        session.endsAt.toLongMillis() + Durations.TEN_MINS_MILLIS
+
     fun getFeedbackNotificationTitle() = "Feedback Time!"
     fun getFeedbackNotificationMessage() = "Your Feedback is Requested"
 }

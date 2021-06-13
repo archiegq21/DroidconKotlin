@@ -35,7 +35,11 @@ class SponsorSessionFragment : Fragment() {
         SponsorSessionViewModelFactory()
     })
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentSponsorSessionBinding.inflate(inflater, container, false)
 
         val adapter = SponsorSessionAdapter(requireActivity())
@@ -43,7 +47,7 @@ class SponsorSessionFragment : Fragment() {
 
         sponsorSessionViewModel.sponsorSessionModel.loadSponsorDetail({
             dataRefresh(it)
-        }){
+        }) {
             Log.e("SponsorSessionFragment", it.message, it)
             activity?.onBackPressed()
         }

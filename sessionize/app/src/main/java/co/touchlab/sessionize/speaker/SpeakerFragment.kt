@@ -39,7 +39,11 @@ class SpeakerFragment : Fragment() {
     lateinit var mainView: View
     lateinit var speakerInfoAdapter: SpeakerInfoAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentSpeakerBinding.inflate(inflater, container, false)
         speakerViewModel.speakerModel.register(object : SpeakerModel.SpeakerView {
             override suspend fun update(data: UserAccount) {
@@ -88,7 +92,7 @@ class SpeakerFragment : Fragment() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpeakerInfoViewHolder {
             val binding = ItemSpeakerInfoBinding
-                    .inflate(LayoutInflater.from(parent.context), parent, false)
+                .inflate(LayoutInflater.from(parent.context), parent, false)
             return SpeakerInfoViewHolder(binding)
         }
 
@@ -97,14 +101,21 @@ class SpeakerFragment : Fragment() {
         override fun onBindViewHolder(holder: SpeakerInfoViewHolder, position: Int) {
             val speakerInfo = infoList[position]
             holder.binding.infoTextView.text = speakerInfo.info
-            holder.binding.infoIconView.setImageResource(finDrawableId(requireContext(), speakerInfo.type.icon))
+            holder.binding.infoIconView.setImageResource(
+                finDrawableId(
+                    requireContext(),
+                    speakerInfo.type.icon
+                )
+            )
         }
     }
 
-    class SpeakerInfoViewHolder(val binding: ItemSpeakerInfoBinding) : RecyclerView.ViewHolder(binding.root)
+    class SpeakerInfoViewHolder(val binding: ItemSpeakerInfoBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }
 
-fun finDrawableId(ctx: Context, str: String): Int = ctx.resources.getIdentifier(str, "drawable", ctx.packageName)
+fun finDrawableId(ctx: Context, str: String): Int =
+    ctx.resources.getIdentifier(str, "drawable", ctx.packageName)
 
 class SpeakerViewModel(userId: String) : ViewModel() {
     val speakerModel = SpeakerModel(userId)

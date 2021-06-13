@@ -15,9 +15,10 @@ fun SessionWithRoom.isRsvp(): Boolean = this.rsvp != 0L
 /**
  * Provide for "ORM-like" associated query
  */
-internal suspend fun UserAccount.sessions(): List<Session> = withContext(ServiceRegistry.backgroundDispatcher) {
-    sessionQueries.userSessions(id).executeAsList()
-}
+internal suspend fun UserAccount.sessions(): List<Session> =
+    withContext(ServiceRegistry.backgroundDispatcher) {
+        sessionQueries.userSessions(id).executeAsList()
+    }
 
 internal suspend fun Session.room(): Room = withContext(ServiceRegistry.backgroundDispatcher) {
     roomQueries.selectById(roomId!!).executeAsOne()

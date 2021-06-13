@@ -13,8 +13,10 @@ import kotlin.test.assertTrue
 abstract class StaticFileLoaderTest {
 
     fun setUp() {
-        ServiceRegistry.initServiceRegistry(testDbConnection(),
-                TestSettings(), SessionizeApiMock(), AnalyticsApiMock(), NotificationsApiMock(), "-0400")
+        ServiceRegistry.initServiceRegistry(
+            testDbConnection(),
+            TestSettings(), SessionizeApiMock(), AnalyticsApiMock(), NotificationsApiMock(), "-0400"
+        )
     }
 
     @AfterTest
@@ -46,9 +48,9 @@ abstract class StaticFileLoaderTest {
                 allowStructuredMapKeys = true
                 ignoreUnknownKeys = true
             }.parseToJsonElement(it).jsonArray
-        assertNotEquals(scheduleJson.size, 0, "empty schedule.json or none found")
-        assertTrue(scheduleJson[0].jsonObject.containsKey("date"))
-        assertTrue(scheduleJson[0].jsonObject.containsKey("rooms"))
+            assertNotEquals(scheduleJson.size, 0, "empty schedule.json or none found")
+            assertTrue(scheduleJson[0].jsonObject.containsKey("date"))
+            assertTrue(scheduleJson[0].jsonObject.containsKey("rooms"))
         }
     }
 

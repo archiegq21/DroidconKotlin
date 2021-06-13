@@ -24,8 +24,10 @@ abstract class EventModelTest {
 
     @BeforeTest
     fun setup() {
-        ServiceRegistry.initServiceRegistry(testDbConnection(),
-                TestSettings(), sessionizeApiMock, analyticsApiMock, notificationsApiMock, timeZone)
+        ServiceRegistry.initServiceRegistry(
+            testDbConnection(),
+            TestSettings(), sessionizeApiMock, analyticsApiMock, notificationsApiMock, timeZone
+        )
 
         ServiceRegistry.initLambdas({ filePrefix, fileType ->
             when (filePrefix) {
@@ -34,7 +36,7 @@ abstract class EventModelTest {
                 "schedule" -> SCHEDULE
                 else -> SCHEDULE
             }
-        }, { s: String -> Unit }, {e:Throwable, message:String -> println(message)})
+        }, { s: String -> Unit }, { e: Throwable, message: String -> println(message) })
 
         AppContext.initAppContext()
 
@@ -44,7 +46,7 @@ abstract class EventModelTest {
     fun testRsvpAndAnalytics() = runTest {
         val eventModel = EventModel("67316")
         val sessions = SessionizeDbHelper.sessionQueries.allSessions().executeAsList()
-        if(sessions.isNotEmpty()) {
+        if (sessions.isNotEmpty()) {
             val session = sessions.first()
             val si = collectSessionInfo(session)
             eventModel.toggleRsvpSuspend(si)
@@ -63,7 +65,7 @@ abstract class EventModelTest {
     }*/
 
     @Test
-    fun testPSTTimeZoneCorrect(){
+    fun testPSTTimeZoneCorrect() {
         val timeStr = "2019-04-12T08:00:00"
         val correctMillis = 1555084800000
 

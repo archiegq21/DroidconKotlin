@@ -16,17 +16,20 @@ class MainApp : Application() {
     override fun onCreate() {
         super.onCreate()
         AndroidAppContext.app = this
-        ServiceRegistry.initLambdas(this::loadAsset, { Log.w("MainApp", it) }, {e:Throwable, message:String ->
-            Log.e("MainApp", message, e)
-        })
+        ServiceRegistry.initLambdas(
+            this::loadAsset,
+            { Log.w("MainApp", it) },
+            { e: Throwable, message: String ->
+                Log.e("MainApp", message, e)
+            })
 
         ServiceRegistry.initServiceRegistry(
-                AndroidSqliteDriver(DroidconDb.Schema, this, "droidcondb2"),
-                AndroidSettings.Factory(this).create("DROIDCON_SETTINGS2"),
-                SessionizeApiImpl,
-                AnalyticsApiImpl(FirebaseAnalytics.getInstance(this)),
-                NotificationsApiImpl(),
-                BuildConfig.TIME_ZONE
+            AndroidSqliteDriver(DroidconDb.Schema, this, "droidcondb2"),
+            AndroidSettings.Factory(this).create("DROIDCON_SETTINGS2"),
+            SessionizeApiImpl,
+            AnalyticsApiImpl(FirebaseAnalytics.getInstance(this)),
+            NotificationsApiImpl(),
+            BuildConfig.TIME_ZONE
         )
 
         AppContext.initAppContext()
@@ -34,10 +37,10 @@ class MainApp : Application() {
         NetworkRepo.sendFeedback()
 
         @Suppress("ConstantConditionIf")
-        if(BuildConfig.FIREBASE_ENABLED) {
+        if (BuildConfig.FIREBASE_ENABLED) {
             //FirebaseMessageHandler.init()
-        }else{
-            Log.d("MainApp","Firebase json not found: Firebased Not Enabled")
+        } else {
+            Log.d("MainApp", "Firebase json not found: Firebased Not Enabled")
         }
     }
 
@@ -47,7 +50,7 @@ class MainApp : Application() {
     }
 
     private fun loadAsset(fileName: String, filePrefix: String): String? =
-            assets.open("$fileName.$filePrefix", Context.MODE_PRIVATE)
-                    .bufferedReader()
-                    .use { it.readText() }
+        assets.open("$fileName.$filePrefix", Context.MODE_PRIVATE)
+            .bufferedReader()
+            .use { it.readText() }
 }

@@ -22,9 +22,11 @@ object SessionizeDbHelper {
 
     fun initDatabase(sqlDriver: SqlDriver) {
         driverRef.value = sqlDriver.freeze()
-        dbRef.value = DroidconDb(sqlDriver, Session.Adapter(
+        dbRef.value = DroidconDb(
+            sqlDriver, Session.Adapter(
                 startsAtAdapter = DateAdapter(), endsAtAdapter = DateAdapter()
-        )).freeze()
+            )
+        ).freeze()
     }
 
     internal fun dbClear() {
@@ -38,15 +40,21 @@ object SessionizeDbHelper {
 
     fun getSessionsQuery(): Query<SessionWithRoom> = instance.sessionQueries.sessionWithRoom()
 
-    fun updateFeedback(feedbackRating: Long?, feedbackComment: String?, id: String) = instance.sessionQueries.updateFeedBack(feedbackRating,feedbackComment,id)
+    fun updateFeedback(feedbackRating: Long?, feedbackComment: String?, id: String) =
+        instance.sessionQueries.updateFeedBack(feedbackRating, feedbackComment, id)
 
-    suspend fun sendFeedback(){
+    suspend fun sendFeedback() {
         val sessions = allFeedbackToSend()
 
         sessions.forEach {
             val rating = it.feedbackRating
-            if(rating != null) {
-                if(ServiceRegistry.sessionizeApi.sendFeedback(it.id, rating.toInt(), it.feedbackComment)){
+            if (rating != null) {
+                if (ServiceRegistry.sessionizeApi.sendFeedback(
+                        it.id,
+                        rating.toInt(),
+                        it.feedbackComment
+                    )
+                ) {
                     instance.sessionQueries.updateFeedBackSent(it.id)
                 }
             }
@@ -57,7 +65,11 @@ object SessionizeDbHelper {
         instance.sessionQueries.sessionFeedbackToSend().executeAsList()
     }
 
-    fun primeAll(speakers: List<Speaker>, schedules: List<Days>, sponsorSessions: List<SponsorSessionGroup>) {
+    fun primeAll(
+        speakers: List<Speaker>,
+        schedules: List<Days>,
+        sponsorSessions: List<SponsorSessionGroup>
+    ) {
         instance.sessionQueries.transaction {
             try {
                 primeSpeakers(speakers)
@@ -96,20 +108,20 @@ object SessionizeDbHelper {
             }
 
             instance.userAccountQueries.insertUserAccount(
-                    speaker.id,
-                    speaker.fullName,
-                    speaker.bio,
-                    speaker.tagLine,
-                    speaker.profilePicture,
-                    twitter,
-                    linkedIn,
-                    if (!companyWebsite.isNullOrEmpty()) {
-                        companyWebsite
-                    } else if (!blog.isNullOrEmpty()) {
-                        blog
-                    } else {
-                        other
-                    }
+                speaker.id,
+                speaker.fullName,
+                speaker.bio,
+                speaker.tagLine,
+                speaker.profilePicture,
+                twitter,
+                linkedIn,
+                if (!companyWebsite.isNullOrEmpty()) {
+                    companyWebsite
+                } else if (!blog.isNullOrEmpty()) {
+                    blog
+                } else {
+                    other
+                }
             )
         }
     }
@@ -137,33 +149,33 @@ object SessionizeDbHelper {
             val sessionDateAdapter = DateAdapter()
             if (dbSession == null) {
                 instance.sessionQueries.insert(
-                        sessionId,
-                        session.title,
-                        session.descriptionText ?: "",
-                        sessionDateAdapter.decode(startsAt),
-                        sessionDateAdapter.decode(endsAt),
-                        if (session.isServiceSession) {
-                            1
-                        } else {
-                            0
-                        }, session.roomId.toLong()
+                    sessionId,
+                    session.title,
+                    session.descriptionText ?: "",
+                    sessionDateAdapter.decode(startsAt),
+                    sessionDateAdapter.decode(endsAt),
+                    if (session.isServiceSession) {
+                        1
+                    } else {
+                        0
+                    }, session.roomId.toLong()
                 )
             } else {
                 instance.sessionQueries.update(
-                        title = session.title,
-                        description = session.descriptionText ?: "",
-                        startsAt = sessionDateAdapter.decode(startsAt),
-                        endsAt = sessionDateAdapter.decode(endsAt),
-                        serviceSession = if (session.isServiceSession) {
-                            1
-                        } else {
-                            0
-                        },
-                        roomId = session.roomId!!.toLong(),
-                        rsvp = dbSession.rsvp,
-                        feedbackRating =  dbSession.feedbackRating,
-                        feedbackComment = dbSession.feedbackComment,
-                        id = sessionId
+                    title = session.title,
+                    description = session.descriptionText ?: "",
+                    startsAt = sessionDateAdapter.decode(startsAt),
+                    endsAt = sessionDateAdapter.decode(endsAt),
+                    serviceSession = if (session.isServiceSession) {
+                        1
+                    } else {
+                        0
+                    },
+                    roomId = session.roomId!!.toLong(),
+                    rsvp = dbSession.rsvp,
+                    feedbackRating = dbSession.feedbackRating,
+                    feedbackComment = dbSession.feedbackComment,
+                    id = sessionId
                 )
             }
 
@@ -184,9 +196,10 @@ object SessionizeDbHelper {
 
         for (sessionSpeaker in speakers) {
             instance.sessionSpeakerQueries.insertUpdate(
-                    sessionId,
-                    sessionSpeaker.id,
-                    displayOrder++)
+                sessionId,
+                sessionSpeaker.id,
+                displayOrder++
+            )
         }
     }
 

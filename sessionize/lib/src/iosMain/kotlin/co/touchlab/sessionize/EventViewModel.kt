@@ -1,8 +1,4 @@
-package co.touchlabYeah.sessionize
-
-import co.touchlab.sessionize.EventModel
-import co.touchlab.sessionize.SessionInfo
-import co.touchlab.sessionize.formattedRoomTime
+package co.touchlab.sessionize
 
 class EventViewModel(sessionId: String) {
     val eventModel = EventModel(sessionId)

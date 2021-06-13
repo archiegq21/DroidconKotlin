@@ -12,14 +12,15 @@ interface NavigationHost {
      * stack to make this navigation reversible.
      */
     fun navigateTo(
-            fragment: Fragment,
-            addToBackstack: Boolean,
-            fragmentAnimation: FragmentAnimation? = null)
+        fragment: Fragment,
+        addToBackstack: Boolean,
+        fragmentAnimation: FragmentAnimation? = null
+    )
 }
 
 data class FragmentAnimation(
-        val enterAnim: Int,
-        val exitAnim: Int,
-        val popEnterAnim: Int,
-        val popExitAnim: Int
+    val enterAnim: Int,
+    val exitAnim: Int,
+    val popEnterAnim: Int,
+    val popExitAnim: Int
 )

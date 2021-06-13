@@ -12,11 +12,13 @@ import kotlinx.coroutines.*
 object AppContext {
     private val mainScope = MainScope()
 
-    fun initAppContext(networkRepo: NetworkRepo = NetworkRepo,
-                       fileRepo: FileRepo = FileRepo,
-                       serviceRegistry: ServiceRegistry = ServiceRegistry,
-                       dbHelper: SessionizeDbHelper = SessionizeDbHelper,
-                       notificationsModel: NotificationsModel = NotificationsModel) {
+    fun initAppContext(
+        networkRepo: NetworkRepo = NetworkRepo,
+        fileRepo: FileRepo = FileRepo,
+        serviceRegistry: ServiceRegistry = ServiceRegistry,
+        dbHelper: SessionizeDbHelper = SessionizeDbHelper,
+        notificationsModel: NotificationsModel = NotificationsModel
+    ) {
         dbHelper.initDatabase(serviceRegistry.dbDriver)
 
         serviceRegistry.notificationsApi.initializeNotifications { success ->
@@ -35,18 +37,20 @@ object AppContext {
         }
     }
 
-    private suspend fun maybeLoadSeedData(fileRepo: FileRepo, serviceRegistry: ServiceRegistry) = withContext(ServiceRegistry.backgroundDispatcher){
-        try {
-            if (firstRun(serviceRegistry)) {
-                fileRepo.seedFileLoad()
-                updateFirstRun(serviceRegistry)
+    private suspend fun maybeLoadSeedData(fileRepo: FileRepo, serviceRegistry: ServiceRegistry) =
+        withContext(ServiceRegistry.backgroundDispatcher) {
+            try {
+                if (firstRun(serviceRegistry)) {
+                    fileRepo.seedFileLoad()
+                    updateFirstRun(serviceRegistry)
+                }
+            } catch (e: Exception) {
+                printThrowable(e)
             }
-        } catch (e: Exception) {
-            printThrowable(e)
         }
-    }
 
-    private fun firstRun(serviceRegistry: ServiceRegistry): Boolean = serviceRegistry.appSettings.getBoolean(KEY_FIRST_RUN, true)
+    private fun firstRun(serviceRegistry: ServiceRegistry): Boolean =
+        serviceRegistry.appSettings.getBoolean(KEY_FIRST_RUN, true)
 
     private fun updateFirstRun(serviceRegistry: ServiceRegistry) {
         serviceRegistry.appSettings.putBoolean(KEY_FIRST_RUN, false)

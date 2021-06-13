@@ -7,8 +7,8 @@ import kotlinx.coroutines.launch
 
 class SponsorViewModel {
     fun load(
-            proc: (List<SponsorGroup>) -> Unit,
-            error: (ex: Throwable) -> Unit
+        proc: (List<SponsorGroup>) -> Unit,
+        error: (ex: Throwable) -> Unit
     ) {
         // TODO: Replace this with the appropriate ios `coroutineScope`
         //  this should only be temporary.

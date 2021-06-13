@@ -12,7 +12,8 @@ import co.touchlab.stately.freeze
 /**
  * Data model for schedule. Configure live data instances.
  */
-class ScheduleModel(private val allEvents: Boolean) : BaseQueryModelView<SessionWithRoom, List<DaySchedule>>(
+class ScheduleModel(private val allEvents: Boolean) :
+    BaseQueryModelView<SessionWithRoom, List<DaySchedule>>(
         SessionizeDbHelper.getSessionsQuery(),
         {
             val dbSessions = it.executeAsList()
@@ -25,7 +26,8 @@ class ScheduleModel(private val allEvents: Boolean) : BaseQueryModelView<Session
             val hourBlocks = formatHourBlocks(sessions)
             convertMapToDaySchedule(hourBlocks)
         },
-        ServiceRegistry.coroutinesDispatcher) {
+        ServiceRegistry.coroutinesDispatcher
+    ) {
 
     init {
         ServiceRegistry.clLogCallback("init ScheduleModel()")

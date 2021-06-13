@@ -3,7 +3,7 @@ package co.touchlab.sessionize
 import com.russhwolf.settings.Settings
 import co.touchlab.stately.collections.frozenHashMap
 
-class TestSettings() :Settings {
+class TestSettings() : Settings {
     private val map = frozenHashMap<String, Any?>()
 
     override val keys: Set<String> = map.keys
@@ -14,9 +14,9 @@ class TestSettings() :Settings {
     }
 
     override fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-        return if(map.containsKey(key)){
+        return if (map.containsKey(key)) {
             map[key] as Boolean
-        }else{
+        } else {
             defaultValue
         }
     }
@@ -26,9 +26,9 @@ class TestSettings() :Settings {
     }
 
     override fun getDouble(key: String, defaultValue: Double): Double {
-        return if(map.containsKey(key)){
+        return if (map.containsKey(key)) {
             map[key] as Double
-        }else{
+        } else {
             defaultValue
         }
     }
@@ -38,9 +38,9 @@ class TestSettings() :Settings {
     }
 
     override fun getFloat(key: String, defaultValue: Float): Float {
-        return if(map.containsKey(key)){
+        return if (map.containsKey(key)) {
             map[key] as Float
-        }else{
+        } else {
             defaultValue
         }
     }
@@ -50,9 +50,9 @@ class TestSettings() :Settings {
     }
 
     override fun getInt(key: String, defaultValue: Int): Int {
-        return if(map.containsKey(key)){
+        return if (map.containsKey(key)) {
             map[key] as Int
-        }else{
+        } else {
             defaultValue
         }
     }
@@ -62,9 +62,9 @@ class TestSettings() :Settings {
     }
 
     override fun getLong(key: String, defaultValue: Long): Long {
-        return if(map.containsKey(key)){
+        return if (map.containsKey(key)) {
             map[key] as Long
-        }else{
+        } else {
             defaultValue
         }
     }
@@ -74,9 +74,9 @@ class TestSettings() :Settings {
     }
 
     override fun getString(key: String, defaultValue: String): String {
-        return if(map.containsKey(key)){
+        return if (map.containsKey(key)) {
             map[key] as String
-        }else{
+        } else {
             defaultValue
         }
     }

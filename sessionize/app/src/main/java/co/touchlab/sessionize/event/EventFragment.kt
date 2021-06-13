@@ -28,7 +28,11 @@ class EventFragment : Fragment() {
         EventViewModelFactory(sessionId)
     })
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentEventBinding.inflate(inflater, container, false).apply {
             eventViewModel.eventModel.register(object : EventModel.EventView {
                 override suspend fun update(data: SessionInfo) {
@@ -42,7 +46,7 @@ class EventFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroyView(){
+    override fun onDestroyView() {
         super.onDestroyView()
         eventViewModel.eventModel.shutDown()
     }
@@ -63,10 +67,20 @@ class EventFragment : Fragment() {
             fab.rippleColor = ContextCompat.getColor(requireContext(), android.R.color.black)
 
             if (event.isRsvped()) {
-                fab.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_check))
+                fab.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireActivity(),
+                        R.drawable.ic_check
+                    )
+                )
                 fab.isActivated = true
             } else {
-                fab.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_plus))
+                fab.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireActivity(),
+                        R.drawable.ic_plus
+                    )
+                )
                 fab.isActivated = false
             }
 
@@ -86,7 +100,7 @@ class EventFragment : Fragment() {
         }
     }
 
-    private fun updateContent(event: SessionInfo, formattedRoomTime:String) {
+    private fun updateContent(event: SessionInfo, formattedRoomTime: String) {
         val adapter = EventDetailAdapter(requireActivity())
 
         binding.eventTitle.text = event.session.title

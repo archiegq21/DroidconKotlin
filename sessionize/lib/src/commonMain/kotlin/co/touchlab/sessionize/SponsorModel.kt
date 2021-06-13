@@ -12,16 +12,16 @@ import kotlin.native.concurrent.ThreadLocal
 object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
 
     suspend fun loadSponsors(
-            proc: (sponsors: List<SponsorGroup>) -> Unit,
-            error: (ex: Throwable) -> Unit
+        proc: (sponsors: List<SponsorGroup>) -> Unit,
+        error: (ex: Throwable) -> Unit
     ) {
         try {
             sponsorGroupsFrom(
-                    Firebase.firestore
-                            .collection("sponsors-sf-2019")
-                            .orderBy("displayOrder")
-                            .get()
-                            .documents
+                Firebase.firestore
+                    .collection("sponsors-sf-2019")
+                    .orderBy("displayOrder")
+                    .get()
+                    .documents
             )
         } catch (e: Throwable) {
             ServiceRegistry.softExceptionCallback(e, "loadSponsorsFromServer failed")
@@ -43,11 +43,11 @@ object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
         val sponsorsList = level["sponsors"] as List<Map<String, String>>
         val sponsors = sponsorsList.map {
             Sponsor(
-                    name = it["name"] as String,
-                    groupName = groupName,
-                    url = it["url"] as String,
-                    icon = it["icon"] as String,
-                    sponsorId = it["sponsorId"]
+                name = it["name"] as String,
+                groupName = groupName,
+                url = it["url"] as String,
+                icon = it["icon"] as String,
+                sponsorId = it["sponsorId"]
             )
         }
 
@@ -56,5 +56,8 @@ object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
 }
 
 fun sponsorClicked(sponsor: Sponsor) {
-    ServiceRegistry.analyticsApi.logEvent("sponsor_clicked", mapOf(Pair("id", sponsor.sponsorId.toString()), Pair("name", sponsor.name)))
+    ServiceRegistry.analyticsApi.logEvent(
+        "sponsor_clicked",
+        mapOf(Pair("id", sponsor.sponsorId.toString()), Pair("name", sponsor.name))
+    )
 }

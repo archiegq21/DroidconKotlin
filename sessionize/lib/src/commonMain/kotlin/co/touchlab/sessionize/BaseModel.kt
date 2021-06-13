@@ -7,7 +7,7 @@ import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
 open class BaseModel(
-        mainContext: CoroutineContext
+    mainContext: CoroutineContext
 ) {
     internal val mainScope = MainScope(mainContext)
 
@@ -16,7 +16,7 @@ open class BaseModel(
     }
 }
 
-internal class MainScope(private val mainContext: CoroutineContext): CoroutineScope{
+internal class MainScope(private val mainContext: CoroutineContext) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = mainContext + job + exceptionHandler
 
