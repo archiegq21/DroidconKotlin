@@ -14,9 +14,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.touchlab.sessionize.R
-import co.touchlab.sessionize.ServiceRegistry
-import co.touchlab.sessionize.SettingsKeys.FEEDBACK_ENABLED
-import co.touchlab.sessionize.SettingsKeys.REMINDERS_ENABLED
 import co.touchlab.sessionize.databinding.FragmentSettingsBinding
 import co.touchlab.sessionize.feedback.FeedbackManager.Companion.FeedbackDisabledNotificationName
 import co.touchlab.sessionize.platform.AndroidAppContext
@@ -77,14 +74,14 @@ class SettingsFragment : Fragment() {
         adapter.addSwitchRow(
             "Enable Feedback",
             R.drawable.baseline_feedback_24,
-            ServiceRegistry.appSettings.getBoolean(FEEDBACK_ENABLED, true)
+            settingsViewModel.settingsModel.feedbackEnabled
         ) { _, isChecked ->
             settingsViewModel.settingsModel.setFeedbackSettingEnabled(isChecked)
         }
         adapter.addSwitchRow(
             "Enable Reminders",
             R.drawable.baseline_insert_invitation_24,
-            ServiceRegistry.appSettings.getBoolean(REMINDERS_ENABLED, true)
+            settingsViewModel.settingsModel.remindersEnabled
         ) { _, isChecked ->
             settingsViewModel.settingsModel.setRemindersSettingEnabled(isChecked)
         }
