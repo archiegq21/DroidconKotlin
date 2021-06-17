@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        KoinKt.doInitKoin(additionalSetUp: { _ in })
+        
         let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") ?? ""
         let fileExists = FileManager.default.fileExists(atPath: path)
         if(fileExists){
@@ -35,7 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timeZone = Bundle.main.object(forInfoDictionaryKey: "TimeZone") as! String
         serviceRegistry.doInitServiceRegistry(sqlDriver: FunctionsKt.defaultDriver(),
                                                 settings: FunctionsKt.defaultSettings(),
-                                                sessionizeApi: SessionizeApiImpl(),
                                                 analyticsApi: FunctionsKt.createAnalyticsApiImpl(analyticsCallback: analyticsCallback),
                                                 notificationsApi: NotificationsApiImpl(),
                                                 timeZone: timeZone)

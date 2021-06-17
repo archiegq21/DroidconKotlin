@@ -3,6 +3,7 @@ package co.touchlab.sessionize
 import co.touchlab.droidcon.db.MySessions
 import co.touchlab.droidcon.db.Session
 import co.touchlab.droidcon.db.UserAccount
+import co.touchlab.sessionize.api.SessionizeApi
 import co.touchlab.sessionize.db.SessionizeDbHelper.sessionQueries
 import co.touchlab.sessionize.db.SessionizeDbHelper.userAccountQueries
 import co.touchlab.sessionize.db.room
@@ -12,6 +13,8 @@ import co.touchlab.sessionize.platform.currentTimeMillis
 import co.touchlab.sessionize.platform.printThrowable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import kotlin.math.max
 
 class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInfo>(
@@ -21,7 +24,11 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
         collectSessionInfo(session)
     },
     ServiceRegistry.coroutinesDispatcher
-) {
+), KoinComponent {
+
+    private val sessionizeApi by lazy {
+        get<SessionizeApi>()
+    }
 
     init {
         ServiceRegistry.clLogCallback("init EventModel($sessionId)")
@@ -47,7 +54,7 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
         NotificationsModel.recreateReminderNotifications()
         NotificationsModel.recreateFeedbackNotifications()
         if (rsvp) {
-            ServiceRegistry.sessionizeApi.recordRsvp(methodName, sessionId)
+            sessionizeApi.recordRsvp(methodName, sessionId)
 
             sendAnalytics(sessionId, rsvp)
         }

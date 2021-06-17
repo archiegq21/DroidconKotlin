@@ -7,6 +7,7 @@ import co.touchlab.sessionize.jsondata.Session
 import co.touchlab.sessionize.jsondata.Speaker
 import co.touchlab.sessionize.jsondata.SponsorSessionGroup
 import co.touchlab.sessionize.platform.createUuid
+import co.touchlab.stately.ensureNeverFrozen
 import co.touchlab.stately.freeze
 import io.ktor.client.*
 import io.ktor.client.features.json.*

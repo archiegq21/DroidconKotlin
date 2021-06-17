@@ -3,6 +3,7 @@ package co.touchlab.sessionize
 import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.api.SessionizeApi
+import co.touchlab.sessionize.api.SessionizeApiImpl
 import co.touchlab.sessionize.platform.backgroundDispatcher
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.ThreadLocalRef
@@ -15,7 +16,6 @@ import kotlin.reflect.KProperty
 
 object ServiceRegistry {
     var analyticsApi: AnalyticsApi by FrozenDelegate()
-    var sessionizeApi: SessionizeApi by ThreadLocalDelegate()
 
     var notificationsApi: NotificationsApi by FrozenDelegate()
     var dbDriver: SqlDriver by FrozenDelegate()
@@ -31,18 +31,18 @@ object ServiceRegistry {
     fun initServiceRegistry(
         sqlDriver: SqlDriver,
         settings: Settings,
-        sessionizeApi: SessionizeApi, analyticsApi: AnalyticsApi,
-        notificationsApi: NotificationsApi, timeZone: String
+        analyticsApi: AnalyticsApi,
+        notificationsApi: NotificationsApi,
+        timeZone: String
     ) {
-        ServiceRegistry.dbDriver = sqlDriver
-        ServiceRegistry.coroutinesDispatcher = Dispatchers.Main
-        ServiceRegistry.backgroundDispatcher = backgroundDispatcher()
-        ServiceRegistry.appSettings = settings
-        ServiceRegistry.sessionizeApi = sessionizeApi
-        ServiceRegistry.analyticsApi = analyticsApi
-        ServiceRegistry.notificationsApi = notificationsApi
-        ServiceRegistry.appSettings = settings
-        ServiceRegistry.timeZone = timeZone
+        dbDriver = sqlDriver
+        coroutinesDispatcher = Dispatchers.Main
+        backgroundDispatcher = backgroundDispatcher()
+        appSettings = settings
+        this.analyticsApi = analyticsApi
+        this.notificationsApi = notificationsApi
+        appSettings = settings
+        this.timeZone = timeZone
     }
 
     fun initLambdas(
@@ -50,9 +50,9 @@ object ServiceRegistry {
         clLogCallback: (s: String) -> Unit,
         softExceptionCallback: (e: Throwable, message: String) -> Unit
     ) {
-        ServiceRegistry.staticFileLoader = staticFileLoader
-        ServiceRegistry.clLogCallback = clLogCallback
-        ServiceRegistry.softExceptionCallback = softExceptionCallback
+        this.staticFileLoader = staticFileLoader
+        this.clLogCallback = clLogCallback
+        this.softExceptionCallback = softExceptionCallback
     }
 }
 

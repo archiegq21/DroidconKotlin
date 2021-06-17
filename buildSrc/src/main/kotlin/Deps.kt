@@ -118,6 +118,14 @@ object Deps {
         const val logback = "ch.qos.logback:logback-classic:1.2.3"
     }
 
+    object Koin {
+        const val version = "3.0.2"
+        const val core = "io.insert-koin:koin-core:$version"
+        const val test = "io.insert-koin:koin-test:$version"
+        const val android = "io.insert-koin:koin-android:$version"
+        const val androidExt = "io.insert-koin:koin-android-ext:$version"
+    }
+
     object Serialization {
         const val version = "1.2.1"
         const val commonRuntime = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"

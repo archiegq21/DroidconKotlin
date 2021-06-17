@@ -91,6 +91,8 @@ kotlin {
                 implementation(Deps.Ktor.commonJson)
                 implementation(Deps.Ktor.serialization)
                 implementation(Deps.Ktor.commonLogging)
+
+                implementation(Deps.Koin.core)
             }
         }
 
@@ -104,6 +106,7 @@ kotlin {
                 implementation(Deps.multiplatformSettings)
                 implementation(Deps.testhelp)
                 implementation(Deps.Kotlin.Coroutines.common)
+                implementation(Deps.Koin.test)
             }
         }
 

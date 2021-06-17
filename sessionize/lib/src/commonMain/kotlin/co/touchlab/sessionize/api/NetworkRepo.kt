@@ -14,15 +14,21 @@ import co.touchlab.sessionize.platform.currentTimeMillis
 import co.touchlab.sessionize.platform.printThrowable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import kotlin.coroutines.CoroutineContext
 import kotlin.native.concurrent.ThreadLocal
 
 
 @ThreadLocal
-object NetworkRepo {
+object NetworkRepo : KoinComponent {
+
+    private val api by lazy {
+        get<SessionizeApi>()
+    }
+
     fun dataCalls() = CoroutineScope(ServiceRegistry.coroutinesDispatcher).mainScope.launch {
         try {
-            val api = ServiceRegistry.sessionizeApi
             val networkSpeakers = api.getSpeakers()
             val networkSessions = api.getSessions()
             val networkSponsorSessions = api.getSponsorSession()
@@ -53,9 +59,9 @@ object NetworkRepo {
     }
 
     fun refreshData() {
-        if (!ServiceRegistry.appSettings.getBoolean(SettingsKeys.KEY_FIRST_RUN, true)) {
+        if (true/*!ServiceRegistry.appSettings.getBoolean(SettingsKeys.KEY_FIRST_RUN, true)*/) {
             val lastLoad = ServiceRegistry.appSettings.getLong(SettingsKeys.KEY_LAST_LOAD)
-            if (lastLoad < (currentTimeMillis() - (Durations.TWO_HOURS_MILLIS.toLong()))) {
+            if (true/*lastLoad < (currentTimeMillis() - (Durations.TWO_HOURS_MILLIS.toLong()))*/) {
                 dataCalls()
             }
         }

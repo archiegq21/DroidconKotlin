@@ -107,6 +107,9 @@ dependencies {
     androidTestImplementation(Deps.Android.Test.Espresso.core)
     implementation(Deps.multiplatformSettings)
 
+    implementation(Deps.Koin.android)
+    implementation(Deps.Koin.androidExt)
+
     implementation(Deps.Android.Navigation.fragment)
     implementation(Deps.Android.Navigation.navigation_ui)
     implementation(Deps.Firebase.firestoreAndroid)

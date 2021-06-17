@@ -2,6 +2,7 @@ package co.touchlab.sessionize.db
 
 import co.touchlab.droidcon.db.*
 import co.touchlab.sessionize.ServiceRegistry
+import co.touchlab.sessionize.api.SessionizeApi
 import co.touchlab.sessionize.api.parseSessionsFromDays
 import co.touchlab.sessionize.jsondata.Days
 import co.touchlab.sessionize.jsondata.SessionSpeaker
@@ -14,8 +15,14 @@ import co.touchlab.stately.freeze
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
-object SessionizeDbHelper {
+object SessionizeDbHelper : KoinComponent {
+
+    private val sessionizeApi by lazy {
+        get<SessionizeApi>()
+    }
 
     private val driverRef = AtomicReference<SqlDriver?>(null)
     private val dbRef = AtomicReference<DroidconDb?>(null)
@@ -49,7 +56,7 @@ object SessionizeDbHelper {
         sessions.forEach {
             val rating = it.feedbackRating
             if (rating != null) {
-                if (ServiceRegistry.sessionizeApi.sendFeedback(
+                if (sessionizeApi.sendFeedback(
                         it.id,
                         rating.toInt(),
                         it.feedbackComment

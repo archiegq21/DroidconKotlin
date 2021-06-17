@@ -13,6 +13,10 @@ object FileRepo {
     private val json = Json {
         allowStructuredMapKeys = true
         ignoreUnknownKeys = true
+
+        // TODO: Revisit once https://github.com/Kotlin/kotlinx.serialization/issues/1450#issuecomment-841214332
+        //  gets resolved. As a workaround, disabling `useAlternativeNames` solves the issue.
+        useAlternativeNames = false
     }
 
     fun seedFileLoad() {

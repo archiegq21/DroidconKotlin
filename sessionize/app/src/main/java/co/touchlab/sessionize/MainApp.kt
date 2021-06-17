@@ -6,15 +6,26 @@ import android.util.Log
 import co.touchlab.droidcon.db.DroidconDb
 import co.touchlab.sessionize.api.NetworkRepo
 import co.touchlab.sessionize.api.SessionizeApiImpl
+import co.touchlab.sessionize.di.initKoin
 import co.touchlab.sessionize.platform.AndroidAppContext
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.russhwolf.settings.AndroidSettings
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import kotlinx.coroutines.Dispatchers
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.Koin
 
 class MainApp : Application() {
+
+    private lateinit var koin: Koin
+
     override fun onCreate() {
         super.onCreate()
+
+        koin = initKoin {
+            androidContext(this@MainApp)
+        }.koin
+
         AndroidAppContext.app = this
         ServiceRegistry.initLambdas(
             this::loadAsset,
