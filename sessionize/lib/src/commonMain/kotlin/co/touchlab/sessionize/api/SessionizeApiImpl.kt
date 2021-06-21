@@ -9,6 +9,7 @@ import co.touchlab.sessionize.jsondata.SponsorSessionGroup
 import co.touchlab.sessionize.platform.createUuid
 import co.touchlab.stately.ensureNeverFrozen
 import co.touchlab.stately.freeze
+import com.russhwolf.settings.Settings
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -77,11 +78,11 @@ object SessionizeApiImpl : SessionizeApi {
 
 }
 
-internal fun userUuid(): String {
-    if (ServiceRegistry.appSettings.getString(SettingsKeys.USER_UUID).isBlank()) {
-        ServiceRegistry.appSettings.putString(SettingsKeys.USER_UUID, createUuid())
+internal fun userUuid(settings: Settings): String {
+    if (settings.getString(SettingsKeys.USER_UUID).isBlank()) {
+        settings.putString(SettingsKeys.USER_UUID, createUuid())
     }
-    return ServiceRegistry.appSettings.getString(SettingsKeys.USER_UUID)
+    return settings.getString(SettingsKeys.USER_UUID)
 }
 
 internal fun parseSessionsFromDays(days: List<Days>): List<Session> {

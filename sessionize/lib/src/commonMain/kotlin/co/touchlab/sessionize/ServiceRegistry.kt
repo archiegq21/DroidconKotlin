@@ -20,7 +20,6 @@ object ServiceRegistry {
     var notificationsApi: NotificationsApi by FrozenDelegate()
     var coroutinesDispatcher: CoroutineDispatcher by FrozenDelegate()
     var backgroundDispatcher: CoroutineDispatcher by FrozenDelegate()
-    var appSettings: Settings by FrozenDelegate()
     var timeZone: String by FrozenDelegate()
 
     var staticFileLoader: ((filePrefix: String, fileType: String) -> String?) by FrozenDelegate()
@@ -28,17 +27,14 @@ object ServiceRegistry {
     var softExceptionCallback: ((e: Throwable, message: String) -> Unit) by FrozenDelegate()
 
     fun initServiceRegistry(
-        settings: Settings,
         analyticsApi: AnalyticsApi,
         notificationsApi: NotificationsApi,
         timeZone: String
     ) {
         coroutinesDispatcher = Dispatchers.Main
         backgroundDispatcher = backgroundDispatcher()
-        appSettings = settings
         this.analyticsApi = analyticsApi
         this.notificationsApi = notificationsApi
-        appSettings = settings
         this.timeZone = timeZone
     }
 

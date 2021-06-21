@@ -36,7 +36,6 @@ class MainApp : Application() {
             })
 
         ServiceRegistry.initServiceRegistry(
-            AndroidSettings.Factory(this).create("DROIDCON_SETTINGS2"),
             AnalyticsApiImpl(FirebaseAnalytics.getInstance(this)),
             NotificationsApiImpl(),
             BuildConfig.TIME_ZONE

@@ -3,15 +3,20 @@ package co.touchlab.sessionize
 import co.touchlab.sessionize.SettingsKeys.FEEDBACK_ENABLED
 import co.touchlab.sessionize.SettingsKeys.REMINDERS_ENABLED
 import co.touchlab.sessionize.platform.NotificationsModel
+import com.russhwolf.settings.Settings
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
-class SettingsModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
+class SettingsModel : BaseModel(ServiceRegistry.coroutinesDispatcher), KoinComponent {
+
+    private val settings: Settings by lazy { get() }
 
     val feedbackEnabled: Boolean
-        get() = ServiceRegistry.appSettings.getBoolean(FEEDBACK_ENABLED, true)
+        get() = settings.getBoolean(FEEDBACK_ENABLED, true)
 
     val remindersEnabled: Boolean
-        get() = ServiceRegistry.appSettings.getBoolean(REMINDERS_ENABLED, true)
+        get() = settings.getBoolean(REMINDERS_ENABLED, true)
 
     fun setRemindersSettingEnabled(enabled: Boolean) = mainScope.launch {
         NotificationsModel.remindersEnabled = enabled

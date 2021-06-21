@@ -12,6 +12,7 @@ import co.touchlab.sessionize.platform.NotificationsModel.createNotifications
 import co.touchlab.sessionize.platform.NotificationsModel.notificationsEnabled
 import co.touchlab.sessionize.platform.currentTimeMillis
 import co.touchlab.sessionize.platform.printThrowable
+import com.russhwolf.settings.Settings
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -23,9 +24,9 @@ import kotlin.native.concurrent.ThreadLocal
 @ThreadLocal
 object NetworkRepo : KoinComponent {
 
-    private val api by lazy {
-        get<SessionizeApi>()
-    }
+    private val api: SessionizeApi by lazy { get() }
+
+    private val settings: Settings by lazy { get() }
 
     fun dataCalls() = CoroutineScope(ServiceRegistry.coroutinesDispatcher).mainScope.launch {
         try {
@@ -55,12 +56,12 @@ object NetworkRepo : KoinComponent {
             schedules,
             sponsorSessions
         )
-        ServiceRegistry.appSettings.putLong(SettingsKeys.KEY_LAST_LOAD, currentTimeMillis())
+        settings.putLong(SettingsKeys.KEY_LAST_LOAD, currentTimeMillis())
     }
 
     fun refreshData() {
-        if (!ServiceRegistry.appSettings.getBoolean(SettingsKeys.KEY_FIRST_RUN, true)) {
-            val lastLoad = ServiceRegistry.appSettings.getLong(SettingsKeys.KEY_LAST_LOAD)
+        if (!settings.getBoolean(SettingsKeys.KEY_FIRST_RUN, true)) {
+            val lastLoad = settings.getLong(SettingsKeys.KEY_LAST_LOAD)
             if (lastLoad < (currentTimeMillis() - (Durations.TWO_HOURS_MILLIS.toLong()))) {
                 dataCalls()
             }

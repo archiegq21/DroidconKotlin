@@ -7,29 +7,34 @@ import co.touchlab.sessionize.SettingsKeys.FEEDBACK_ENABLED
 import co.touchlab.sessionize.SettingsKeys.LOCAL_NOTIFICATIONS_ENABLED
 import co.touchlab.sessionize.SettingsKeys.REMINDERS_ENABLED
 import co.touchlab.sessionize.db.SessionizeDbHelper.sessionQueries
+import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
-object NotificationsModel {
+object NotificationsModel: KoinComponent {
+
+    private val settings: Settings by lazy { get() }
 
     // Settings
     var notificationsEnabled: Boolean
-        get() = ServiceRegistry.appSettings.getBoolean(LOCAL_NOTIFICATIONS_ENABLED, true)
+        get() = settings.getBoolean(LOCAL_NOTIFICATIONS_ENABLED, true)
         set(value) {
-            ServiceRegistry.appSettings[LOCAL_NOTIFICATIONS_ENABLED] = value
+            settings[LOCAL_NOTIFICATIONS_ENABLED] = value
         }
 
     var feedbackEnabled: Boolean
-        get() = ServiceRegistry.appSettings.getBoolean(FEEDBACK_ENABLED, true)
+        get() = settings.getBoolean(FEEDBACK_ENABLED, true)
         set(value) {
-            ServiceRegistry.appSettings[FEEDBACK_ENABLED] = value
+            settings[FEEDBACK_ENABLED] = value
         }
 
     var remindersEnabled: Boolean
-        get() = ServiceRegistry.appSettings.getBoolean(LOCAL_NOTIFICATIONS_ENABLED, true) &&
-                ServiceRegistry.appSettings.getBoolean(REMINDERS_ENABLED, true)
+        get() = settings.getBoolean(LOCAL_NOTIFICATIONS_ENABLED, true) &&
+                settings.getBoolean(REMINDERS_ENABLED, true)
         set(value) {
-            ServiceRegistry.appSettings[REMINDERS_ENABLED] = value
+            settings[REMINDERS_ENABLED] = value
         }
 
     suspend fun createNotifications() {
