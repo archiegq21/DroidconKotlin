@@ -7,6 +7,7 @@ import co.touchlab.droidcon.db.DroidconDb
 import co.touchlab.sessionize.api.NetworkRepo
 import co.touchlab.sessionize.api.SessionizeApiImpl
 import co.touchlab.sessionize.di.initKoin
+import co.touchlab.sessionize.di.platformModule
 import co.touchlab.sessionize.platform.AndroidAppContext
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.russhwolf.settings.AndroidSettings
@@ -22,7 +23,7 @@ class MainApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        koin = initKoin {
+        koin = initKoin(platformModule) {
             androidContext(this@MainApp)
         }.koin
 
@@ -35,9 +36,7 @@ class MainApp : Application() {
             })
 
         ServiceRegistry.initServiceRegistry(
-            AndroidSqliteDriver(DroidconDb.Schema, this, "droidcondb2"),
             AndroidSettings.Factory(this).create("DROIDCON_SETTINGS2"),
-            SessionizeApiImpl,
             AnalyticsApiImpl(FirebaseAnalytics.getInstance(this)),
             NotificationsApiImpl(),
             BuildConfig.TIME_ZONE

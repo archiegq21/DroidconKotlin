@@ -59,9 +59,9 @@ object NetworkRepo : KoinComponent {
     }
 
     fun refreshData() {
-        if (true/*!ServiceRegistry.appSettings.getBoolean(SettingsKeys.KEY_FIRST_RUN, true)*/) {
+        if (!ServiceRegistry.appSettings.getBoolean(SettingsKeys.KEY_FIRST_RUN, true)) {
             val lastLoad = ServiceRegistry.appSettings.getLong(SettingsKeys.KEY_LAST_LOAD)
-            if (true/*lastLoad < (currentTimeMillis() - (Durations.TWO_HOURS_MILLIS.toLong()))*/) {
+            if (lastLoad < (currentTimeMillis() - (Durations.TWO_HOURS_MILLIS.toLong()))) {
                 dataCalls()
             }
         }

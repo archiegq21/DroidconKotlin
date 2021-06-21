@@ -7,9 +7,14 @@ import co.touchlab.sessionize.file.FileRepo
 import co.touchlab.sessionize.platform.NotificationsModel
 import co.touchlab.sessionize.platform.backgroundDispatcher
 import co.touchlab.sessionize.platform.printThrowable
-import kotlinx.coroutines.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
-object AppContext {
+object AppContext: KoinComponent {
+
     private val mainScope = MainScope()
 
     fun initAppContext(
@@ -19,7 +24,7 @@ object AppContext {
         dbHelper: SessionizeDbHelper = SessionizeDbHelper,
         notificationsModel: NotificationsModel = NotificationsModel
     ) {
-        dbHelper.initDatabase(serviceRegistry.dbDriver)
+        dbHelper.initDatabase(get())
 
         serviceRegistry.notificationsApi.initializeNotifications { success ->
             if (success) {

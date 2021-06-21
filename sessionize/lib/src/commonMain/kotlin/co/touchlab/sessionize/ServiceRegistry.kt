@@ -18,7 +18,6 @@ object ServiceRegistry {
     var analyticsApi: AnalyticsApi by FrozenDelegate()
 
     var notificationsApi: NotificationsApi by FrozenDelegate()
-    var dbDriver: SqlDriver by FrozenDelegate()
     var coroutinesDispatcher: CoroutineDispatcher by FrozenDelegate()
     var backgroundDispatcher: CoroutineDispatcher by FrozenDelegate()
     var appSettings: Settings by FrozenDelegate()
@@ -29,13 +28,11 @@ object ServiceRegistry {
     var softExceptionCallback: ((e: Throwable, message: String) -> Unit) by FrozenDelegate()
 
     fun initServiceRegistry(
-        sqlDriver: SqlDriver,
         settings: Settings,
         analyticsApi: AnalyticsApi,
         notificationsApi: NotificationsApi,
         timeZone: String
     ) {
-        dbDriver = sqlDriver
         coroutinesDispatcher = Dispatchers.Main
         backgroundDispatcher = backgroundDispatcher()
         appSettings = settings

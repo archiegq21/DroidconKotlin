@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        KoinKt.doInitKoin(additionalSetUp: { _ in })
+        KoinKt.doInitKoin(platformModule: PlatformModuleKt.platformModule, additionalSetUp: { _ in })
         
         let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") ?? ""
         let fileExists = FileManager.default.fileExists(atPath: path)
@@ -35,11 +35,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         serviceRegistry.doInitLambdas(staticFileLoader: loadAsset, clLogCallback: csLog, softExceptionCallback: softExceptionCallback)
 
         let timeZone = Bundle.main.object(forInfoDictionaryKey: "TimeZone") as! String
-        serviceRegistry.doInitServiceRegistry(sqlDriver: FunctionsKt.defaultDriver(),
-                                                settings: FunctionsKt.defaultSettings(),
-                                                analyticsApi: FunctionsKt.createAnalyticsApiImpl(analyticsCallback: analyticsCallback),
-                                                notificationsApi: NotificationsApiImpl(),
-                                                timeZone: timeZone)
+        serviceRegistry.doInitServiceRegistry(
+            settings: FunctionsKt.defaultSettings(),
+            analyticsApi: FunctionsKt.createAnalyticsApiImpl(analyticsCallback: analyticsCallback),
+            notificationsApi: NotificationsApiImpl(),
+            timeZone: timeZone
+        )
 
 
         AppContext().doInitAppContext(networkRepo: NetworkRepo(), fileRepo: FileRepo(), serviceRegistry: ServiceRegistry(), dbHelper: SessionizeDbHelper(), notificationsModel: NotificationsModel())
