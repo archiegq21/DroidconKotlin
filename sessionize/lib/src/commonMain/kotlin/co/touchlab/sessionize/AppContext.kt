@@ -2,6 +2,7 @@ package co.touchlab.sessionize
 
 import co.touchlab.sessionize.SettingsKeys.KEY_FIRST_RUN
 import co.touchlab.sessionize.api.NetworkRepo
+import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.db.SessionizeDbHelper
 import co.touchlab.sessionize.file.FileRepo
 import co.touchlab.sessionize.platform.NotificationsModel
@@ -26,16 +27,17 @@ object AppContext: KoinComponent {
 
     private val settings: Settings by lazy { get() }
 
+    private val notificationsApi: NotificationsApi by lazy { get() }
+
     fun initAppContext(
         networkRepo: NetworkRepo = NetworkRepo,
         fileRepo: FileRepo = FileRepo,
-        serviceRegistry: ServiceRegistry = ServiceRegistry,
         dbHelper: SessionizeDbHelper = SessionizeDbHelper,
         notificationsModel: NotificationsModel = NotificationsModel
     ) {
         dbHelper.initDatabase(get())
 
-        serviceRegistry.notificationsApi.initializeNotifications { success ->
+        notificationsApi.initializeNotifications { success ->
             if (success) {
                 mainScope.launch {
                     notificationsModel.createNotifications()

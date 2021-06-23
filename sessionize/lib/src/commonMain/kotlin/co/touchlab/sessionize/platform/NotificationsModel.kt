@@ -6,6 +6,7 @@ import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.SettingsKeys.FEEDBACK_ENABLED
 import co.touchlab.sessionize.SettingsKeys.LOCAL_NOTIFICATIONS_ENABLED
 import co.touchlab.sessionize.SettingsKeys.REMINDERS_ENABLED
+import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.db.SessionizeDbHelper.sessionQueries
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
@@ -16,6 +17,8 @@ import org.koin.core.component.get
 object NotificationsModel: KoinComponent {
 
     private val settings: Settings by lazy { get() }
+
+    private val notificationsApi: NotificationsApi by lazy { get() }
 
     // Settings
     var notificationsEnabled: Boolean
@@ -50,17 +53,17 @@ object NotificationsModel: KoinComponent {
     }
 
     fun cancelFeedbackNotifications() =
-        ServiceRegistry.notificationsApi.cancelFeedbackNotifications()
+        notificationsApi.cancelFeedbackNotifications()
 
     fun cancelReminderNotifications(andDismissals: Boolean) =
-        ServiceRegistry.notificationsApi.cancelReminderNotifications(andDismissals)
+        notificationsApi.cancelReminderNotifications(andDismissals)
 
     suspend fun recreateReminderNotifications() {
         cancelReminderNotifications(false)
         if (remindersEnabled) {
             val mySessions = mySessions()
             if (mySessions.isNotEmpty()) {
-                ServiceRegistry.notificationsApi.scheduleReminderNotificationsForSessions(mySessions)
+                notificationsApi.scheduleReminderNotificationsForSessions(mySessions)
             }
         }
     }
@@ -70,7 +73,7 @@ object NotificationsModel: KoinComponent {
         if (feedbackEnabled) {
             val mySessions = mySessions()
             if (mySessions.isNotEmpty()) {
-                ServiceRegistry.notificationsApi.scheduleFeedbackNotificationsForSessions(mySessions)
+                notificationsApi.scheduleFeedbackNotificationsForSessions(mySessions)
             }
         }
     }

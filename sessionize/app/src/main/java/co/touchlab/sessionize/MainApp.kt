@@ -3,16 +3,11 @@ package co.touchlab.sessionize
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import co.touchlab.droidcon.db.DroidconDb
 import co.touchlab.sessionize.api.NetworkRepo
-import co.touchlab.sessionize.api.SessionizeApiImpl
+import co.touchlab.sessionize.api.NotificationsApi
+import co.touchlab.sessionize.di.androidModule
 import co.touchlab.sessionize.di.initKoin
-import co.touchlab.sessionize.di.platformModule
 import co.touchlab.sessionize.platform.AndroidAppContext
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.russhwolf.settings.AndroidSettings
-import com.squareup.sqldelight.android.AndroidSqliteDriver
-import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.Koin
 
@@ -20,10 +15,12 @@ class MainApp : Application() {
 
     private lateinit var koin: Koin
 
+    private val notificationsApi: NotificationsApi by lazy { koin.get()  }
+
     override fun onCreate() {
         super.onCreate()
 
-        koin = initKoin(platformModule) {
+        koin = initKoin(androidModule()) {
             androidContext(this@MainApp)
         }.koin
 
@@ -35,10 +32,7 @@ class MainApp : Application() {
                 Log.e("MainApp", message, e)
             })
 
-        ServiceRegistry.initServiceRegistry(
-            NotificationsApiImpl(),
-            BuildConfig.TIME_ZONE
-        )
+        ServiceRegistry.initServiceRegistry(BuildConfig.TIME_ZONE)
 
         AppContext.initAppContext()
 
@@ -54,7 +48,7 @@ class MainApp : Application() {
 
     override fun onTerminate() {
         super.onTerminate()
-        ServiceRegistry.notificationsApi.deinitializeNotifications()
+        notificationsApi.deinitializeNotifications()
     }
 
     private fun loadAsset(fileName: String, filePrefix: String): String? =

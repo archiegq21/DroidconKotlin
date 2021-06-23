@@ -1,6 +1,7 @@
 package co.touchlab.sessionize.di
 
 import co.touchlab.droidcon.db.DroidconDb
+import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.platform.createAnalyticsApiImpl
 import com.russhwolf.settings.AppleSettings
 import com.squareup.sqldelight.db.SqlDriver
@@ -9,10 +10,15 @@ import org.koin.dsl.module
 
 fun iosModule(
     analyticsCallback: (name: String, params: Map<String, Any>) -> Unit,
+    notificationsApi: NotificationsApi,
 ) = module {
 
     single {
         createAnalyticsApiImpl(analyticsCallback)
+    }
+
+    single {
+        notificationsApi
     }
 
     single<SqlDriver> {

@@ -16,12 +16,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     let serviceRegistry = ServiceRegistry()
-
+    
+    var notificationsApi = NotificationsApiImpl()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         KoinKt.doInitKoin(
             platformModule: PlatformModuleKt.iosModule(
-                analyticsCallback: analyticsCallback
+                analyticsCallback: analyticsCallback,
+                notificationsApi: notificationsApi
             ),
             additionalSetUp: { _ in }
         )
@@ -40,13 +42,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         serviceRegistry.doInitLambdas(staticFileLoader: loadAsset, clLogCallback: csLog, softExceptionCallback: softExceptionCallback)
 
         let timeZone = Bundle.main.object(forInfoDictionaryKey: "TimeZone") as! String
-        serviceRegistry.doInitServiceRegistry(
-            notificationsApi: NotificationsApiImpl(),
-            timeZone: timeZone
+        serviceRegistry.doInitServiceRegistry(timeZone: timeZone)
+
+        AppContext().doInitAppContext(
+            networkRepo: NetworkRepo(),
+            fileRepo: FileRepo(),
+            dbHelper: SessionizeDbHelper(),
+            notificationsModel: NotificationsModel()
         )
-
-
-        AppContext().doInitAppContext(networkRepo: NetworkRepo(), fileRepo: FileRepo(), serviceRegistry: ServiceRegistry(), dbHelper: SessionizeDbHelper(), notificationsModel: NotificationsModel())
 
         NetworkRepo().sendFeedback()
         
@@ -96,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-        serviceRegistry.notificationsApi.deinitializeNotifications()
+        notificationsApi.deinitializeNotifications()
     }
 }
 
