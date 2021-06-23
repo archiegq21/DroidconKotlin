@@ -3,6 +3,7 @@ package co.touchlab.sessionize
 import co.touchlab.droidcon.db.MySessions
 import co.touchlab.droidcon.db.Session
 import co.touchlab.droidcon.db.UserAccount
+import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.api.SessionizeApi
 import co.touchlab.sessionize.db.SessionizeDbHelper.sessionQueries
 import co.touchlab.sessionize.db.SessionizeDbHelper.userAccountQueries
@@ -26,9 +27,9 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
     ServiceRegistry.coroutinesDispatcher
 ), KoinComponent {
 
-    private val sessionizeApi by lazy {
-        get<SessionizeApi>()
-    }
+    private val sessionizeApi: SessionizeApi by lazy { get() }
+
+    private val analyticsApi: AnalyticsApi by lazy { get() }
 
     init {
         ServiceRegistry.clLogCallback("init EventModel($sessionId)")
@@ -56,7 +57,7 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
         if (rsvp) {
             sessionizeApi.recordRsvp(methodName, sessionId)
 
-            sendAnalytics(sessionId, rsvp)
+            sendAnalytics(sessionId, rsvp, analyticsApi)
         }
     }
 
@@ -71,7 +72,7 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
             )
         }
 
-    private suspend fun sendAnalytics(sessionId: String, rsvp: Boolean) =
+    private suspend fun sendAnalytics(sessionId: String, rsvp: Boolean, analyticsApi: AnalyticsApi) =
         withContext(ServiceRegistry.backgroundDispatcher) {
             try {
                 val session = sessionQueries.sessionById(sessionId).executeAsOne()
@@ -84,7 +85,7 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
                 } else {
                     -1
                 }
-                ServiceRegistry.analyticsApi.logEvent("RSVP_EVENT", params)
+                analyticsApi.logEvent("RSVP_EVENT", params)
             } catch (e: Exception) {
                 printThrowable(e)
             }

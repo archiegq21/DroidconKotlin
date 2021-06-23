@@ -52,7 +52,7 @@ object AppContext: KoinComponent {
     }
 
     private suspend fun maybeLoadSeedData(settings: Settings, fileRepo: FileRepo) =
-        withContext(/*mainScope.coroutineContext*/ServiceRegistry.backgroundDispatcher) {
+        withContext(ServiceRegistry.backgroundDispatcher) {
             try {
                 if (firstRun(settings)) {
                     fileRepo.seedFileLoad()

@@ -36,7 +36,6 @@ class MainApp : Application() {
             })
 
         ServiceRegistry.initServiceRegistry(
-            AnalyticsApiImpl(FirebaseAnalytics.getInstance(this)),
             NotificationsApiImpl(),
             BuildConfig.TIME_ZONE
         )

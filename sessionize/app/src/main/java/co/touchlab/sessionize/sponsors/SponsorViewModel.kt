@@ -1,6 +1,8 @@
 package co.touchlab.sessionize.sponsors
 
+import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.SponsorsModel
+import co.touchlab.sessionize.jsondata.Sponsor
 import co.touchlab.sessionize.jsondata.SponsorGroup
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -18,4 +20,5 @@ class SponsorViewModel {
             SponsorsModel.loadSponsors(proc, error)
         }
     }
+
 }

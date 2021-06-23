@@ -1,16 +1,21 @@
 package co.touchlab.sessionize
 
 import co.touchlab.droidcon.db.UserAccount
+import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.db.SessionizeDbHelper.sponsorSessionQueries
 import co.touchlab.sessionize.db.SessionizeDbHelper.userAccountQueries
 import co.touchlab.sessionize.jsondata.Sponsor
 import co.touchlab.sessionize.platform.printThrowable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
+object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher), KoinComponent {
+
+    private val analyticsApi: AnalyticsApi by lazy { get() }
 
     //This is super ugly and I apologize, but the changes weren't finished in time and I need to release...
     var sponsor: Sponsor? by FrozenDelegate()
@@ -57,7 +62,7 @@ object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
                 params["sponsorId"] = it.sponsorId ?: ""
                 params["name"] = it.name
 
-                ServiceRegistry.analyticsApi.logEvent("SPONSOR_VIEWED", params)
+                analyticsApi.logEvent("SPONSOR_VIEWED", params)
             }
 
         } catch (e: Exception) {

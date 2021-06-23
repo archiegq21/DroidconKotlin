@@ -1,21 +1,15 @@
 package co.touchlab.sessionize
 
-import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.api.NotificationsApi
-import co.touchlab.sessionize.api.SessionizeApi
-import co.touchlab.sessionize.api.SessionizeApiImpl
 import co.touchlab.sessionize.platform.backgroundDispatcher
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.ThreadLocalRef
 import co.touchlab.stately.freeze
-import com.russhwolf.settings.Settings
-import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlin.reflect.KProperty
 
 object ServiceRegistry {
-    var analyticsApi: AnalyticsApi by FrozenDelegate()
 
     var notificationsApi: NotificationsApi by FrozenDelegate()
     var coroutinesDispatcher: CoroutineDispatcher by FrozenDelegate()
@@ -27,13 +21,11 @@ object ServiceRegistry {
     var softExceptionCallback: ((e: Throwable, message: String) -> Unit) by FrozenDelegate()
 
     fun initServiceRegistry(
-        analyticsApi: AnalyticsApi,
         notificationsApi: NotificationsApi,
         timeZone: String
     ) {
         coroutinesDispatcher = Dispatchers.Main
         backgroundDispatcher = backgroundDispatcher()
-        this.analyticsApi = analyticsApi
         this.notificationsApi = notificationsApi
         this.timeZone = timeZone
     }

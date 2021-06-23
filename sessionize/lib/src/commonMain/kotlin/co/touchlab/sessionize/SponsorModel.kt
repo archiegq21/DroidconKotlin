@@ -1,15 +1,20 @@
 package co.touchlab.sessionize
 
+import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.jsondata.Sponsor
 import co.touchlab.sessionize.jsondata.SponsorGroup
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.firestore.orderBy
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
+object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher), KoinComponent {
+
+    private val analyticsApi: AnalyticsApi by lazy { get() }
 
     suspend fun loadSponsors(
         proc: (sponsors: List<SponsorGroup>) -> Unit,
@@ -53,11 +58,11 @@ object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
 
         return SponsorGroup(groupName, sponsors)
     }
-}
 
-fun sponsorClicked(sponsor: Sponsor) {
-    ServiceRegistry.analyticsApi.logEvent(
-        "sponsor_clicked",
-        mapOf(Pair("id", sponsor.sponsorId.toString()), Pair("name", sponsor.name))
-    )
+    fun sponsorClicked(sponsor: Sponsor) {
+        analyticsApi.logEvent(
+            "sponsor_clicked",
+            mapOf(Pair("id", sponsor.sponsorId.toString()), Pair("name", sponsor.name))
+        )
+    }
 }
