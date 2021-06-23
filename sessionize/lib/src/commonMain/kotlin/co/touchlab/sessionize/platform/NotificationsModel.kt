@@ -10,6 +10,7 @@ import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.db.SessionizeDbHelper.sessionQueries
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -79,7 +80,7 @@ object NotificationsModel: KoinComponent {
     }
 
     private suspend fun mySessions(): List<MySessions> =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+        withContext(Dispatchers.Default) {
             sessionQueries.mySessions().executeAsList()
         }
 

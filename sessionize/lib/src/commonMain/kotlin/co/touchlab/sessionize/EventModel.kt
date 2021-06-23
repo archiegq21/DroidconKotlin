@@ -12,6 +12,7 @@ import co.touchlab.sessionize.platform.DateFormatHelper
 import co.touchlab.sessionize.platform.NotificationsModel
 import co.touchlab.sessionize.platform.currentTimeMillis
 import co.touchlab.sessionize.platform.printThrowable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -24,7 +25,7 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
         val session = q.executeAsOne()
         collectSessionInfo(session)
     },
-    ServiceRegistry.coroutinesDispatcher
+    Dispatchers.Main
 ), KoinComponent {
 
     private val sessionizeApi: SessionizeApi by lazy { get() }
@@ -62,7 +63,7 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
     }
 
     internal suspend fun callUpdateRsvp(rsvp: Boolean, localSessionId: String) =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+        withContext(Dispatchers.Default) {
             sessionQueries.updateRsvp(
                 if (rsvp) {
                     1
@@ -73,7 +74,7 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
         }
 
     private suspend fun sendAnalytics(sessionId: String, rsvp: Boolean, analyticsApi: AnalyticsApi) =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+        withContext(Dispatchers.Default) {
             try {
                 val session = sessionQueries.sessionById(sessionId).executeAsOne()
                 val params = HashMap<String, Any>()

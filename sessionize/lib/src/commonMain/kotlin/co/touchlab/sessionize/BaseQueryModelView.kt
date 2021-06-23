@@ -5,6 +5,7 @@ import co.touchlab.sessionize.platform.assertNotMainThread
 import co.touchlab.sessionize.platform.printThrowable
 import co.touchlab.stately.ensureNeverFrozen
 import com.squareup.sqldelight.Query
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -33,7 +34,7 @@ abstract class BaseQueryModelView<Q : Any, VT>(
                     assertNotMainThread()
                     extractData(it)
                 }
-                .flowOn(ServiceRegistry.backgroundDispatcher)
+                .flowOn(Dispatchers.Default)
                 .collect { vt ->
                     view?.let {
                         it.update(vt)

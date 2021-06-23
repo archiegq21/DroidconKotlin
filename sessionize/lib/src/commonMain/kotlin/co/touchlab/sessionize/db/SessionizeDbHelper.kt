@@ -14,6 +14,7 @@ import co.touchlab.stately.concurrency.value
 import co.touchlab.stately.freeze
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.db.SqlDriver
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -68,7 +69,7 @@ object SessionizeDbHelper : KoinComponent {
         }
     }
 
-    internal suspend fun allFeedbackToSend() = withContext(ServiceRegistry.backgroundDispatcher) {
+    internal suspend fun allFeedbackToSend() = withContext(Dispatchers.Default) {
         instance.sessionQueries.sessionFeedbackToSend().executeAsList()
     }
 

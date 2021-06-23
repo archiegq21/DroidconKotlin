@@ -4,13 +4,14 @@ import co.touchlab.droidcon.db.Session
 import co.touchlab.droidcon.db.UserAccount
 import co.touchlab.sessionize.db.SessionizeDbHelper.userAccountQueries
 import co.touchlab.sessionize.db.sessions
+import kotlinx.coroutines.Dispatchers
 
 class SpeakerModel(speakerId: String) : BaseQueryModelView<UserAccount, UserAccount>(
     userAccountQueries.selectById(speakerId),
     {
         it.executeAsOne()
     },
-    ServiceRegistry.coroutinesDispatcher
+    Dispatchers.Main
 ) {
     init {
         ServiceRegistry.clLogCallback("init SpeakerModel($speakerId)")

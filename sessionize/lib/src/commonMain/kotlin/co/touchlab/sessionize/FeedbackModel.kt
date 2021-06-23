@@ -7,10 +7,11 @@ import co.touchlab.sessionize.db.SessionizeDbHelper
 import co.touchlab.sessionize.platform.NotificationsModel.cancelFeedbackNotifications
 import co.touchlab.sessionize.platform.NotificationsModel.feedbackEnabled
 import co.touchlab.sessionize.platform.currentTimeMillis
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FeedbackModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
+class FeedbackModel : BaseModel(Dispatchers.Main) {
     private var feedbackListener: FeedbackApi? = null
 
     fun showFeedbackForPastSessions(listener: FeedbackApi) {
@@ -29,7 +30,7 @@ class FeedbackModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
     }
 
     private suspend fun loadPastSessions(): List<MyPastSession>? =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+        withContext(Dispatchers.Default) {
             if (feedbackEnabled) {
                 SessionizeDbHelper.sessionQueries.myPastSession().executeAsList()
             } else
@@ -46,7 +47,7 @@ class FeedbackModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
     }
 
     private suspend fun updateFeedback(sessionId: String, rating: Int, comment: String) =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+        withContext(Dispatchers.Default) {
             SessionizeDbHelper.updateFeedback(rating.toLong(), comment, sessionId)
         }
 }

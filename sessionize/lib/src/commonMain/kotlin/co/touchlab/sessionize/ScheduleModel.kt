@@ -8,6 +8,7 @@ import co.touchlab.sessionize.display.DaySchedule
 import co.touchlab.sessionize.display.convertMapToDaySchedule
 import co.touchlab.sessionize.display.formatHourBlocks
 import co.touchlab.stately.freeze
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Data model for schedule. Configure live data instances.
@@ -26,7 +27,7 @@ class ScheduleModel(private val allEvents: Boolean) :
             val hourBlocks = formatHourBlocks(sessions)
             convertMapToDaySchedule(hourBlocks)
         },
-        ServiceRegistry.coroutinesDispatcher
+        Dispatchers.Main
     ) {
 
     init {

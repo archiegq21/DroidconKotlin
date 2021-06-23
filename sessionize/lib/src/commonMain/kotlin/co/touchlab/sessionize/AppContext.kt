@@ -13,6 +13,7 @@ import co.touchlab.stately.concurrency.value
 import co.touchlab.stately.freeze
 import com.russhwolf.settings.Settings
 import com.squareup.sqldelight.db.SqlDriver
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -54,7 +55,7 @@ object AppContext: KoinComponent {
     }
 
     private suspend fun maybeLoadSeedData(settings: Settings, fileRepo: FileRepo) =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+        withContext(Dispatchers.Default) {
             try {
                 if (firstRun(settings)) {
                     fileRepo.seedFileLoad()

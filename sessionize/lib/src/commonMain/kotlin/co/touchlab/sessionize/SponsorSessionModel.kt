@@ -6,6 +6,7 @@ import co.touchlab.sessionize.db.SessionizeDbHelper.sponsorSessionQueries
 import co.touchlab.sessionize.db.SessionizeDbHelper.userAccountQueries
 import co.touchlab.sessionize.jsondata.Sponsor
 import co.touchlab.sessionize.platform.printThrowable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -13,7 +14,7 @@ import org.koin.core.component.get
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher), KoinComponent {
+object SponsorSessionModel : BaseModel(Dispatchers.Main), KoinComponent {
 
     private val analyticsApi: AnalyticsApi by lazy { get() }
 
@@ -46,7 +47,7 @@ object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher), Ko
     }
 
     internal suspend fun loadSponsorDetailData(sponsor: Sponsor): Pair<String, List<UserAccount>> =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+        withContext(Dispatchers.Default) {
             val id = sponsor.sponsorId!!
             Pair(
                 sponsorSessionQueries.sponsorSessionById(id).executeAsOne().description ?: "",

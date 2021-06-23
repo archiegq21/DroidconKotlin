@@ -5,11 +5,12 @@ import co.touchlab.sessionize.SettingsKeys.REMINDERS_ENABLED
 import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.platform.NotificationsModel
 import com.russhwolf.settings.Settings
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
-class SettingsModel : BaseModel(ServiceRegistry.coroutinesDispatcher), KoinComponent {
+class SettingsModel : BaseModel(Dispatchers.Main), KoinComponent {
 
     private val settings: Settings by lazy { get() }
 

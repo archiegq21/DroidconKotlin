@@ -7,12 +7,13 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.firestore.orderBy
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher), KoinComponent {
+object SponsorsModel : BaseModel(Dispatchers.Main), KoinComponent {
 
     private val analyticsApi: AnalyticsApi by lazy { get() }
 

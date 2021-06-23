@@ -2,6 +2,7 @@ package co.touchlab.sessionize
 
 import co.touchlab.sessionize.ServiceRegistry.clLogCallback
 import co.touchlab.sessionize.ServiceRegistry.staticFileLoader
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
@@ -10,7 +11,7 @@ import kotlinx.serialization.json.Json
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object AboutModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
+object AboutModel : BaseModel(Dispatchers.Main) {
     fun loadAboutInfo(proc: (aboutInfo: List<AboutInfo>) -> Unit) = mainScope.launch {
         clLogCallback("loadAboutInfo AboutModel()")
         proc(aboutLoad())

@@ -4,13 +4,10 @@ import co.touchlab.sessionize.platform.backgroundDispatcher
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlin.reflect.KProperty
 
 object ServiceRegistry {
 
-    var coroutinesDispatcher: CoroutineDispatcher by FrozenDelegate()
-    var backgroundDispatcher: CoroutineDispatcher by FrozenDelegate()
     var timeZone: String by FrozenDelegate()
 
     var staticFileLoader: ((filePrefix: String, fileType: String) -> String?) by FrozenDelegate()
@@ -20,8 +17,6 @@ object ServiceRegistry {
     fun initServiceRegistry(
         timeZone: String
     ) {
-        coroutinesDispatcher = Dispatchers.Main
-        backgroundDispatcher = backgroundDispatcher()
         this.timeZone = timeZone
     }
 

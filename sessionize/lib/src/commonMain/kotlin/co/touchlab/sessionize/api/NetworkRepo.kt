@@ -13,6 +13,7 @@ import co.touchlab.sessionize.platform.NotificationsModel.notificationsEnabled
 import co.touchlab.sessionize.platform.currentTimeMillis
 import co.touchlab.sessionize.platform.printThrowable
 import com.russhwolf.settings.Settings
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -28,7 +29,7 @@ object NetworkRepo : KoinComponent {
 
     private val settings: Settings by lazy { get() }
 
-    fun dataCalls() = CoroutineScope(ServiceRegistry.coroutinesDispatcher).mainScope.launch {
+    fun dataCalls() = CoroutineScope(Dispatchers.Main).mainScope.launch {
         try {
             val networkSpeakers = api.getSpeakers()
             val networkSessions = api.getSessions()
@@ -51,7 +52,7 @@ object NetworkRepo : KoinComponent {
         schedules: List<Days>,
         sponsorSessions: List<SponsorSessionGroup>,
         settings: Settings,
-    ) = withContext(ServiceRegistry.backgroundDispatcher) {
+    ) = withContext(Dispatchers.Default) {
         SessionizeDbHelper.primeAll(
             speakers,
             schedules,
@@ -69,7 +70,7 @@ object NetworkRepo : KoinComponent {
         }
     }
 
-    fun sendFeedback() = CoroutineScope(ServiceRegistry.coroutinesDispatcher).mainScope.launch {
+    fun sendFeedback() = CoroutineScope(Dispatchers.Main).mainScope.launch {
         try {
             SessionizeDbHelper.sendFeedback()
         } catch (e: Throwable) {
