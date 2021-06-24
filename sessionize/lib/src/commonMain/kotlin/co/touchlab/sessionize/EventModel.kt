@@ -76,7 +76,11 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
             )
         }
 
-    private suspend fun sendAnalytics(sessionId: String, rsvp: Boolean, analyticsApi: AnalyticsApi) =
+    private suspend fun sendAnalytics(
+        sessionId: String,
+        rsvp: Boolean,
+        analyticsApi: AnalyticsApi,
+    ) =
         withContext(Dispatchers.Default) {
             try {
                 val session = sessionQueries.sessionById(sessionId).executeAsOne()
@@ -157,6 +161,8 @@ suspend fun Session.formattedRoomTime(): String {
 }
 
 object SessionInfoStuff {
+
     private val TIME_FORMAT = "h:mm a"
+
     val roomNameTimeFormatter = DateFormatHelper(TIME_FORMAT)
 }

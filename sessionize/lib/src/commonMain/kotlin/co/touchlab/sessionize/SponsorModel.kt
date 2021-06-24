@@ -3,6 +3,7 @@ package co.touchlab.sessionize
 import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.jsondata.Sponsor
 import co.touchlab.sessionize.jsondata.SponsorGroup
+import co.touchlab.sessionize.util.SoftExceptionHandler
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.firestore
@@ -17,6 +18,8 @@ object SponsorsModel : BaseModel(Dispatchers.Main), KoinComponent {
 
     private val analyticsApi: AnalyticsApi by inject()
 
+    private val exceptionHandler: SoftExceptionHandler by inject()
+
     suspend fun loadSponsors(
         proc: (sponsors: List<SponsorGroup>) -> Unit,
         error: (ex: Throwable) -> Unit
@@ -30,7 +33,7 @@ object SponsorsModel : BaseModel(Dispatchers.Main), KoinComponent {
                     .documents
             )
         } catch (e: Throwable) {
-            ServiceRegistry.softExceptionCallback(e, "loadSponsorsFromServer failed")
+            exceptionHandler.handle(e, "loadSponsorsFromServer failed")
             error(e)
         }
     }

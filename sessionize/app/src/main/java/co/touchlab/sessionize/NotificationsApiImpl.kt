@@ -1,21 +1,16 @@
 package co.touchlab.sessionize
 
-import android.app.Activity
-import android.app.AlarmManager
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import app.sessionize.touchlab.lib.R
-import co.touchlab.sessionize.api.NotificationsApi
-import co.touchlab.sessionize.platform.AndroidAppContext
 import android.os.RemoteException
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import app.sessionize.touchlab.lib.R
 import co.touchlab.droidcon.db.MySessions
+import co.touchlab.sessionize.api.NotificationsApi
+import co.touchlab.sessionize.platform.AndroidAppContext
 import co.touchlab.sessionize.platform.NotificationsModel.getFeedbackNotificationMessage
 import co.touchlab.sessionize.platform.NotificationsModel.getFeedbackNotificationTitle
 import co.touchlab.sessionize.platform.NotificationsModel.getFeedbackTimeFromSession
@@ -26,10 +21,9 @@ import co.touchlab.sessionize.platform.NotificationsModel.notificationsEnabled
 import co.touchlab.sessionize.platform.currentTimeMillis
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.NoSuchElementException
 
 
-class NotificationsApiImpl : NotificationsApi {
+class NotificationsApiImpl : NotificationsApi{
 
     override fun scheduleReminderNotificationsForSessions(sessions: List<MySessions>) {
         try {
@@ -187,7 +181,7 @@ class NotificationsApiImpl : NotificationsApi {
         fun msTimeToString(time: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = time
-            calendar.timeZone = TimeZone.getTimeZone(ServiceRegistry.timeZone)
+            calendar.timeZone = TimeZone.getTimeZone(TimeZoneProvider.timeZone)
             val format = SimpleDateFormat("MM/dd/YYYY, hh:mma")
             return format.format(calendar.time)
         }

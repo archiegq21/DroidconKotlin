@@ -2,7 +2,6 @@ package co.touchlab.sessionize.api
 
 import co.touchlab.sessionize.BaseModel
 import co.touchlab.sessionize.Durations
-import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.SettingsKeys
 import co.touchlab.sessionize.db.SessionizeDbHelper
 import co.touchlab.sessionize.jsondata.Days
@@ -12,12 +11,13 @@ import co.touchlab.sessionize.platform.NotificationsModel.createNotifications
 import co.touchlab.sessionize.platform.NotificationsModel.notificationsEnabled
 import co.touchlab.sessionize.platform.currentTimeMillis
 import co.touchlab.sessionize.platform.printThrowable
+import co.touchlab.sessionize.util.SoftExceptionHandler
 import com.russhwolf.settings.Settings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.native.concurrent.ThreadLocal
 
@@ -25,9 +25,11 @@ import kotlin.native.concurrent.ThreadLocal
 @ThreadLocal
 object NetworkRepo : KoinComponent {
 
-    private val api: SessionizeApi by lazy { get() }
+    private val api: SessionizeApi by inject()
 
-    private val settings: Settings by lazy { get() }
+    private val settings: Settings by inject()
+
+    private val exceptionHandler: SoftExceptionHandler by inject()
 
     fun dataCalls() = CoroutineScope(Dispatchers.Main).mainScope.launch {
         try {
@@ -74,7 +76,7 @@ object NetworkRepo : KoinComponent {
         try {
             SessionizeDbHelper.sendFeedback()
         } catch (e: Throwable) {
-            ServiceRegistry.softExceptionCallback(e, "Feedback Send Failed")
+            exceptionHandler.handle(e, "Feedback Send Failed")
         }
     }
 

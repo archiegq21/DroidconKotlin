@@ -10,5 +10,3 @@ actual fun testDbConnection(): SqlDriver = NativeSqliteDriver(DroidconDb.Schema,
 actual fun <T> runTest(block: suspend () -> T) {
     runBlocking { block() }
 }
-
-fun accessServiceRegistry() = ServiceRegistry

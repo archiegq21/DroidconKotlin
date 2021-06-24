@@ -15,14 +15,14 @@ abstract class StaticFileLoaderTest {
     abstract val fileLoader: FileLoader
 
     fun setUp() {
-        ServiceRegistry.initServiceRegistry(
-//            testDbConnection(),
-//            TestSettings(),
-//            SessionizeApiMock(),
-//            AnalyticsApiMock(),
-//            NotificationsApiMock(),
-            "-0400"
-        )
+//        ServiceRegistry.initServiceRegistry(
+////            testDbConnection(),
+////            TestSettings(),
+////            SessionizeApiMock(),
+////            AnalyticsApiMock(),
+////            NotificationsApiMock(),
+//            "-0400"
+//        )
     }
 
     @AfterTest

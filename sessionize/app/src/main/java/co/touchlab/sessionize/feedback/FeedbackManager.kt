@@ -5,12 +5,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import co.touchlab.droidcon.db.MyPastSession
 import co.touchlab.sessionize.FeedbackModel
-import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.api.FeedbackApi
 import co.touchlab.sessionize.platform.AndroidAppContext
 import co.touchlab.sessionize.platform.NotificationsModel.feedbackEnabled
+import co.touchlab.sessionize.util.SoftExceptionHandler
 
-class FeedbackManager : FeedbackApi {
+class FeedbackManager(
+    private val exceptionHandler: SoftExceptionHandler
+) : FeedbackApi {
 
     private var fragmentManager: FragmentManager? = null
     private var feedbackModel: FeedbackModel = FeedbackModel()
@@ -29,7 +31,7 @@ class FeedbackManager : FeedbackApi {
         try {
             feedbackDialog?.dismiss()
         } catch (e: Exception) {
-            ServiceRegistry.softExceptionCallback(e, "Failed closing FeedbackManager")
+            exceptionHandler.handle(e, "Failed closing FeedbackManager")
         }
         feedbackDialog = null
     }
@@ -51,7 +53,7 @@ class FeedbackManager : FeedbackApi {
                 feedbackDialog?.showNow(it, "FeedbackDialog")
             }
         } catch (e: Exception) {
-            ServiceRegistry.softExceptionCallback(
+            exceptionHandler.handle(
                 e,
                 "Failed generating feedback dialog. Probably closing context."
             )

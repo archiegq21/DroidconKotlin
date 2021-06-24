@@ -1,13 +1,11 @@
 package co.touchlab.sessionize.api
 
-import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.SettingsKeys
 import co.touchlab.sessionize.jsondata.Days
 import co.touchlab.sessionize.jsondata.Session
 import co.touchlab.sessionize.jsondata.Speaker
 import co.touchlab.sessionize.jsondata.SponsorSessionGroup
 import co.touchlab.sessionize.platform.createUuid
-import co.touchlab.stately.ensureNeverFrozen
 import co.touchlab.stately.freeze
 import com.russhwolf.settings.Settings
 import io.ktor.client.*
@@ -15,8 +13,6 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal

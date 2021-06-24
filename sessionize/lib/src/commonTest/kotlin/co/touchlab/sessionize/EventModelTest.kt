@@ -24,23 +24,23 @@ abstract class EventModelTest {
 
     @BeforeTest
     fun setup() {
-        ServiceRegistry.initServiceRegistry(
-//            testDbConnection(),
-//            TestSettings(),
-//            sessionizeApiMock,
-//            analyticsApiMock,
-//            notificationsApiMock,
-            timeZone
-        )
+//        ServiceRegistry.initServiceRegistry(
+////            testDbConnection(),
+////            TestSettings(),
+////            sessionizeApiMock,
+////            analyticsApiMock,
+////            notificationsApiMock,
+//            timeZone
+//        )
 
-        ServiceRegistry.initLambdas({ filePrefix, fileType ->
-            when (filePrefix) {
-                "sponsors" -> SPONSORS
-                "speakers" -> SPEAKERS
-                "schedule" -> SCHEDULE
-                else -> SCHEDULE
-            }
-        }, { s: String -> Unit }, { e: Throwable, message: String -> println(message) })
+//        ServiceRegistry.initLambdas({ filePrefix, fileType ->
+//            when (filePrefix) {
+//                "sponsors" -> SPONSORS
+//                "speakers" -> SPEAKERS
+//                "schedule" -> SCHEDULE
+//                else -> SCHEDULE
+//            }
+//        }, { s: String -> Unit }, { e: Throwable, message: String -> println(message) })
 
         AppContext.initAppContext()
 

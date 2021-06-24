@@ -4,7 +4,6 @@ import co.touchlab.droidcon.db.Room
 import co.touchlab.droidcon.db.Session
 import co.touchlab.droidcon.db.SessionWithRoom
 import co.touchlab.droidcon.db.UserAccount
-import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.db.SessionizeDbHelper.roomQueries
 import co.touchlab.sessionize.db.SessionizeDbHelper.sessionQueries
 import kotlinx.coroutines.Dispatchers

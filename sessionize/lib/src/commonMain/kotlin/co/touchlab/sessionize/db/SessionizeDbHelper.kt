@@ -176,7 +176,7 @@ object SessionizeDbHelper : KoinComponent {
                     } else {
                         0
                     },
-                    roomId = session.roomId!!.toLong(),
+                    roomId = session.roomId.toLong(),
                     rsvp = dbSession.rsvp,
                     feedbackRating = dbSession.feedbackRating,
                     feedbackComment = dbSession.feedbackComment,

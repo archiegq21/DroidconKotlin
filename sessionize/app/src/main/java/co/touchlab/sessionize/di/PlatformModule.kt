@@ -8,12 +8,15 @@ import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.file.FileLoader
 import co.touchlab.sessionize.platform.FileLoaderImpl
 import co.touchlab.sessionize.platform.LogHandlerImpl
+import co.touchlab.sessionize.platform.SoftExceptionHandlerImpl
 import co.touchlab.sessionize.util.LogHandler
+import co.touchlab.sessionize.util.SoftExceptionHandler
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.russhwolf.settings.AndroidSettings
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 fun androidModule() = module {
@@ -40,6 +43,10 @@ fun androidModule() = module {
 
     single<LogHandler> {
         LogHandlerImpl
+    }
+
+    single<SoftExceptionHandler> {
+        SoftExceptionHandlerImpl
     }
 
 }

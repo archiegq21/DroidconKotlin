@@ -1,25 +1,21 @@
 package co.touchlab.sessionize
 
+import co.touchlab.sessionize.api.AnalyticsApi
+import co.touchlab.sessionize.api.NotificationsApi
+import co.touchlab.sessionize.api.SessionizeApi
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze
+import com.russhwolf.settings.Settings
+import com.squareup.sqldelight.db.SqlDriver
+import kotlinx.coroutines.Dispatchers
+import kotlin.native.concurrent.SharedImmutable
 import kotlin.reflect.KProperty
 
-object ServiceRegistry {
-
+object TimeZoneProvider {
     var timeZone: String by FrozenDelegate()
 
-    var softExceptionCallback: ((e: Throwable, message: String) -> Unit) by FrozenDelegate()
-
-    fun initServiceRegistry(
-        timeZone: String
-    ) {
+    fun init(timeZone: String) {
         this.timeZone = timeZone
-    }
-
-    fun initLambdas(
-        softExceptionCallback: (e: Throwable, message: String) -> Unit
-    ) {
-        this.softExceptionCallback = softExceptionCallback
     }
 }
 

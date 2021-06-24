@@ -3,23 +3,23 @@ package co.touchlab.sessionize
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import co.touchlab.sessionize.api.NetworkRepo
 import co.touchlab.sessionize.databinding.ActivityMainBinding
 import co.touchlab.sessionize.feedback.FeedbackManager
 import com.google.android.material.snackbar.Snackbar
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 
-class MainActivity : AppCompatActivity(), SnackHost {
+class MainActivity : AppCompatActivity(), SnackHost, KoinComponent {
 
     private lateinit var binding: ActivityMainBinding
 
-    private var feedbackManager = FeedbackManager()
+    private var feedbackManager = FeedbackManager(get())
     val firebaseMessageHandler = FirebaseMessageHandler()
 
     var scheduleRecyclerViewPos: Parcelable? = null

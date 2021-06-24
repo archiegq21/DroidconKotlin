@@ -6,6 +6,7 @@ import co.touchlab.sessionize.db.SessionizeDbHelper.sponsorSessionQueries
 import co.touchlab.sessionize.db.SessionizeDbHelper.userAccountQueries
 import co.touchlab.sessionize.jsondata.Sponsor
 import co.touchlab.sessionize.platform.printThrowable
+import co.touchlab.sessionize.util.SoftExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -76,9 +77,9 @@ object SponsorSessionModel : BaseModel(Dispatchers.Main), KoinComponent {
 
     interface View<VT> {
         suspend fun update(data: VT)
-        fun error(t: Throwable) {
+        fun error(exceptionHandler: SoftExceptionHandler, t: Throwable) {
             printThrowable(t)
-            ServiceRegistry.softExceptionCallback(t, t.message ?: "(Unknown View Error)")
+            exceptionHandler.handle(t, t.message ?: "(Unknown View Error)")
         }
     }
 }

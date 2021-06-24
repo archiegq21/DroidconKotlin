@@ -19,16 +19,15 @@ class MainApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        koin = initKoin(androidModule()) {
+        TimeZoneProvider.init(BuildConfig.TIME_ZONE)
+
+        koin = initKoin(
+            platformModule = androidModule(),
+        ) {
             androidContext(this@MainApp)
         }.koin
 
         AndroidAppContext.app = this
-        ServiceRegistry.initLambdas { e: Throwable, message: String ->
-            Log.e("MainApp", message, e)
-        }
-
-        ServiceRegistry.initServiceRegistry(BuildConfig.TIME_ZONE)
 
         AppContext.initAppContext()
 

@@ -1,7 +1,6 @@
 package co.touchlab.sessionize
 
 import android.os.Build
-import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import co.touchlab.sessionize.file.FileLoader
@@ -22,12 +21,12 @@ class StaticFileLoaderTestJVM : StaticFileLoaderTest() {
     @BeforeTest
     fun androidSetup() {
 
-        ServiceRegistry.initLambdas(
-            { s: String -> Unit },
-            { e: Throwable, message: String ->
-                Log.e("StaticFileLoaderTest", message, e)
-            }
-        )
+//        ServiceRegistry.initLambdas(
+//            { s: String -> Unit },
+//            { e: Throwable, message: String ->
+//                Log.e("StaticFileLoaderTest", message, e)
+//            }
+//        )
 
         setUp()
 

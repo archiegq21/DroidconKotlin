@@ -4,8 +4,10 @@ import co.touchlab.droidcon.db.DroidconDb
 import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.file.FileLoader
 import co.touchlab.sessionize.platform.FileLoaderImpl
+import co.touchlab.sessionize.platform.SoftExceptionHandlerImpl
 import co.touchlab.sessionize.platform.createAnalyticsApiImpl
 import co.touchlab.sessionize.util.LogHandler
+import co.touchlab.sessionize.util.SoftExceptionHandler
 import com.russhwolf.settings.AppleSettings
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
@@ -40,5 +42,9 @@ fun iosModule(
 
     single {
         logHandler
+    }
+
+    single<SoftExceptionHandler> {
+        SoftExceptionHandlerImpl
     }
 }

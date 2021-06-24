@@ -15,11 +15,14 @@ import Firebase
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    let serviceRegistry = ServiceRegistry()
     
     var notificationsApi = NotificationsApiImpl()
+    
+    var timeZoneProvider = TimeZoneProvider()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        timeZoneProvider.doInit(timeZone: Bundle.main.object(forInfoDictionaryKey: "TimeZone") as! String)
+        
         KoinKt.doInitKoin(
             platformModule: PlatformModuleKt.iosModule(
                 analyticsCallback: analyticsCallback,
@@ -39,11 +42,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         application.statusBarStyle = .lightContent
-
-        serviceRegistry.doInitLambdas(softExceptionCallback: softExceptionCallback)
-
-        let timeZone = Bundle.main.object(forInfoDictionaryKey: "TimeZone") as! String
-        serviceRegistry.doInitServiceRegistry(timeZone: timeZone)
 
         AppContext().doInitAppContext(
             networkRepo: NetworkRepo(),
