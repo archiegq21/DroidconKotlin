@@ -7,6 +7,8 @@ import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.file.FileLoader
 import co.touchlab.sessionize.platform.FileLoaderImpl
+import co.touchlab.sessionize.platform.LogHandlerImpl
+import co.touchlab.sessionize.util.LogHandler
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.russhwolf.settings.AndroidSettings
 import com.squareup.sqldelight.android.AndroidSqliteDriver
@@ -34,6 +36,10 @@ fun androidModule() = module {
 
     single<FileLoader> {
         FileLoaderImpl(androidContext())
+    }
+
+    single<LogHandler> {
+        LogHandlerImpl
     }
 
 }

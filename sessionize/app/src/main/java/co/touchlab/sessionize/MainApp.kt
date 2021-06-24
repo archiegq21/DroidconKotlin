@@ -24,11 +24,9 @@ class MainApp : Application() {
         }.koin
 
         AndroidAppContext.app = this
-        ServiceRegistry.initLambdas(
-            { Log.w("MainApp", it) },
-            { e: Throwable, message: String ->
-                Log.e("MainApp", message, e)
-            })
+        ServiceRegistry.initLambdas { e: Throwable, message: String ->
+            Log.e("MainApp", message, e)
+        }
 
         ServiceRegistry.initServiceRegistry(BuildConfig.TIME_ZONE)
 

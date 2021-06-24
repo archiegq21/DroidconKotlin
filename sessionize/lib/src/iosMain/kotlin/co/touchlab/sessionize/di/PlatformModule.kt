@@ -5,6 +5,7 @@ import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.file.FileLoader
 import co.touchlab.sessionize.platform.FileLoaderImpl
 import co.touchlab.sessionize.platform.createAnalyticsApiImpl
+import co.touchlab.sessionize.util.LogHandler
 import com.russhwolf.settings.AppleSettings
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
@@ -14,6 +15,7 @@ import platform.Foundation.NSBundle
 fun iosModule(
     analyticsCallback: (name: String, params: Map<String, Any>) -> Unit,
     notificationsApi: NotificationsApi,
+    logHandler: LogHandler,
 ) = module {
 
     single {
@@ -36,4 +38,7 @@ fun iosModule(
         FileLoaderImpl
     }
 
+    single {
+        logHandler
+    }
 }

@@ -23,7 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         KoinKt.doInitKoin(
             platformModule: PlatformModuleKt.iosModule(
                 analyticsCallback: analyticsCallback,
-                notificationsApi: notificationsApi
+                notificationsApi: notificationsApi,
+                logHandler: LogHandlerImpl()
             ),
             additionalSetUp: { _ in }
         )
@@ -39,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         application.statusBarStyle = .lightContent
 
-        serviceRegistry.doInitLambdas(clLogCallback: csLog, softExceptionCallback: softExceptionCallback)
+        serviceRegistry.doInitLambdas(softExceptionCallback: softExceptionCallback)
 
         let timeZone = Bundle.main.object(forInfoDictionaryKey: "TimeZone") as! String
         serviceRegistry.doInitServiceRegistry(timeZone: timeZone)
@@ -60,10 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func softExceptionCallback(e:KotlinThrowable, message:String) {
-    }
-    
-    func csLog(s:String) {
-        CLSLogv(s, getVaList([]))
     }
 
     func analyticsCallback(name:String, params:[String:Any]) {
@@ -110,3 +107,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        )
 //    }
 //}
+
+class LogHandlerImpl : LogHandler {
+    func log(s: String) {
+        CLSLogv(s, getVaList([]))
+    }
+}

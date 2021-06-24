@@ -8,7 +8,6 @@ object ServiceRegistry {
 
     var timeZone: String by FrozenDelegate()
 
-    var clLogCallback: ((s: String) -> Unit) by FrozenDelegate()
     var softExceptionCallback: ((e: Throwable, message: String) -> Unit) by FrozenDelegate()
 
     fun initServiceRegistry(
@@ -18,10 +17,8 @@ object ServiceRegistry {
     }
 
     fun initLambdas(
-        clLogCallback: (s: String) -> Unit,
         softExceptionCallback: (e: Throwable, message: String) -> Unit
     ) {
-        this.clLogCallback = clLogCallback
         this.softExceptionCallback = softExceptionCallback
     }
 }

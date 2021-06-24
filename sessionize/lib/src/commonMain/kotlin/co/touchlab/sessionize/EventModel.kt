@@ -12,6 +12,7 @@ import co.touchlab.sessionize.platform.DateFormatHelper
 import co.touchlab.sessionize.platform.NotificationsModel
 import co.touchlab.sessionize.platform.currentTimeMillis
 import co.touchlab.sessionize.platform.printThrowable
+import co.touchlab.sessionize.util.LogHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,8 +33,10 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
 
     private val analyticsApi: AnalyticsApi by inject()
 
+    private val logHandler: LogHandler by inject()
+
     init {
-        ServiceRegistry.clLogCallback("init EventModel($sessionId)")
+        logHandler.log("init EventModel($sessionId)")
     }
 
     interface EventView : View<SessionInfo>
