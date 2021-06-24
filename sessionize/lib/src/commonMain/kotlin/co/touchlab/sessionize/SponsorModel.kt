@@ -9,13 +9,13 @@ import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.firestore.orderBy
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
 object SponsorsModel : BaseModel(Dispatchers.Main), KoinComponent {
 
-    private val analyticsApi: AnalyticsApi by lazy { get() }
+    private val analyticsApi: AnalyticsApi by inject()
 
     suspend fun loadSponsors(
         proc: (sponsors: List<SponsorGroup>) -> Unit,

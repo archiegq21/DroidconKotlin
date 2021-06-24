@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         application.statusBarStyle = .lightContent
 
-        serviceRegistry.doInitLambdas(staticFileLoader: loadAsset, clLogCallback: csLog, softExceptionCallback: softExceptionCallback)
+        serviceRegistry.doInitLambdas(clLogCallback: csLog, softExceptionCallback: softExceptionCallback)
 
         let timeZone = Bundle.main.object(forInfoDictionaryKey: "TimeZone") as! String
         serviceRegistry.doInitServiceRegistry(timeZone: timeZone)
@@ -64,15 +64,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func csLog(s:String) {
         CLSLogv(s, getVaList([]))
-    }
-
-    func loadAsset(filePrefix:String, fileType:String) -> String?{
-        do{
-            let bundleFile = Bundle.main.path(forResource: filePrefix, ofType: fileType)
-            return try String(contentsOfFile: bundleFile!)
-        } catch {
-            return nil
-        }
     }
 
     func analyticsCallback(name:String, params:[String:Any]) {

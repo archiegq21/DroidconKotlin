@@ -1,7 +1,6 @@
 package co.touchlab.sessionize.db
 
 import co.touchlab.droidcon.db.*
-import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.api.SessionizeApi
 import co.touchlab.sessionize.api.parseSessionsFromDays
 import co.touchlab.sessionize.jsondata.Days
@@ -17,13 +16,11 @@ import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 
 object SessionizeDbHelper : KoinComponent {
 
-    private val sessionizeApi by lazy {
-        get<SessionizeApi>()
-    }
+    private val sessionizeApi: SessionizeApi by inject()
 
     private val driverRef = AtomicReference<SqlDriver?>(null)
     private val dbRef = AtomicReference<DroidconDb?>(null)

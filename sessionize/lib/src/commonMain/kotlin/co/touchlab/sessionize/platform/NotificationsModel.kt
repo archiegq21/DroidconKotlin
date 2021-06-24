@@ -2,7 +2,6 @@ package co.touchlab.sessionize.platform
 
 import co.touchlab.droidcon.db.MySessions
 import co.touchlab.sessionize.Durations
-import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.SettingsKeys.FEEDBACK_ENABLED
 import co.touchlab.sessionize.SettingsKeys.LOCAL_NOTIFICATIONS_ENABLED
 import co.touchlab.sessionize.SettingsKeys.REMINDERS_ENABLED
@@ -14,10 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.component.inject
 
 object NotificationsModel: KoinComponent {
 
-    private val settings: Settings by lazy { get() }
+    private val settings: Settings by inject()
 
     private val notificationsApi: NotificationsApi by lazy { get() }
 

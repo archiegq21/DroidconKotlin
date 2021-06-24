@@ -5,6 +5,8 @@ import co.touchlab.sessionize.AnalyticsApiImpl
 import co.touchlab.sessionize.NotificationsApiImpl
 import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.api.NotificationsApi
+import co.touchlab.sessionize.file.FileLoader
+import co.touchlab.sessionize.platform.FileLoaderImpl
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.russhwolf.settings.AndroidSettings
 import com.squareup.sqldelight.android.AndroidSqliteDriver
@@ -28,6 +30,10 @@ fun androidModule() = module {
 
     single {
         AndroidSettings.Factory(androidContext()).create("DROIDCON_SETTINGS2")
+    }
+
+    single<FileLoader> {
+        FileLoaderImpl(androidContext())
     }
 
 }

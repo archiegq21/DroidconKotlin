@@ -1,8 +1,6 @@
 package co.touchlab.sessionize.file
 
-import co.touchlab.sessionize.ServiceRegistry.staticFileLoader
 import co.touchlab.sessionize.db.SessionizeDbHelper
-import co.touchlab.sessionize.jsondata.Speaker
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlin.native.concurrent.ThreadLocal
@@ -19,10 +17,10 @@ object FileRepo {
         useAlternativeNames = false
     }
 
-    fun seedFileLoad() {
-        val speakerJson = staticFileLoader("speakers", "json")
-        val scheduleJson = staticFileLoader("schedule", "json")
-        val sponsorSessionJson = staticFileLoader("sponsor_session", "json")
+    fun seedFileLoad(fileLoader: FileLoader) {
+        val speakerJson = fileLoader.load("speakers", "json")
+        val scheduleJson = fileLoader.load("schedule", "json")
+        val sponsorSessionJson = fileLoader.load("sponsor_session", "json")
 
         if (speakerJson != null && scheduleJson != null && sponsorSessionJson != null) {
             SessionizeDbHelper.primeAll(

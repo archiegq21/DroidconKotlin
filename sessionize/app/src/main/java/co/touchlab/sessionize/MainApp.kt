@@ -1,7 +1,6 @@
 package co.touchlab.sessionize
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import co.touchlab.sessionize.api.NetworkRepo
 import co.touchlab.sessionize.api.NotificationsApi
@@ -15,7 +14,7 @@ class MainApp : Application() {
 
     private lateinit var koin: Koin
 
-    private val notificationsApi: NotificationsApi by lazy { koin.get()  }
+    private val notificationsApi: NotificationsApi by lazy { koin.get() }
 
     override fun onCreate() {
         super.onCreate()
@@ -26,7 +25,6 @@ class MainApp : Application() {
 
         AndroidAppContext.app = this
         ServiceRegistry.initLambdas(
-            this::loadAsset,
             { Log.w("MainApp", it) },
             { e: Throwable, message: String ->
                 Log.e("MainApp", message, e)
@@ -51,8 +49,4 @@ class MainApp : Application() {
         notificationsApi.deinitializeNotifications()
     }
 
-    private fun loadAsset(fileName: String, filePrefix: String): String? =
-        assets.open("$fileName.$filePrefix", Context.MODE_PRIVATE)
-            .bufferedReader()
-            .use { it.readText() }
 }

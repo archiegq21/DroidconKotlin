@@ -1,16 +1,13 @@
 package co.touchlab.sessionize
 
-import co.touchlab.sessionize.platform.backgroundDispatcher
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.reflect.KProperty
 
 object ServiceRegistry {
 
     var timeZone: String by FrozenDelegate()
 
-    var staticFileLoader: ((filePrefix: String, fileType: String) -> String?) by FrozenDelegate()
     var clLogCallback: ((s: String) -> Unit) by FrozenDelegate()
     var softExceptionCallback: ((e: Throwable, message: String) -> Unit) by FrozenDelegate()
 
@@ -21,11 +18,9 @@ object ServiceRegistry {
     }
 
     fun initLambdas(
-        staticFileLoader: (filePrefix: String, fileType: String) -> String?,
         clLogCallback: (s: String) -> Unit,
         softExceptionCallback: (e: Throwable, message: String) -> Unit
     ) {
-        this.staticFileLoader = staticFileLoader
         this.clLogCallback = clLogCallback
         this.softExceptionCallback = softExceptionCallback
     }

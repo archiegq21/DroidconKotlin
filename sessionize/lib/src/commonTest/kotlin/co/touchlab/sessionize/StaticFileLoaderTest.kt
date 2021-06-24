@@ -1,7 +1,7 @@
 package co.touchlab.sessionize
 
 
-import co.touchlab.sessionize.mocks.NotificationsApiMock
+import co.touchlab.sessionize.file.FileLoader
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -11,6 +11,8 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 abstract class StaticFileLoaderTest {
+
+    abstract val fileLoader: FileLoader
 
     fun setUp() {
         ServiceRegistry.initServiceRegistry(
@@ -29,7 +31,7 @@ abstract class StaticFileLoaderTest {
 
     @Test
     fun testAbout() {
-        val about = ServiceRegistry.staticFileLoader("about", "json")
+        val about = fileLoader.load("about", "json")
         about?.let {
 
             val aboutJson = Json {
@@ -46,7 +48,7 @@ abstract class StaticFileLoaderTest {
 
     @Test
     fun testSchedule() {
-        val schedule = ServiceRegistry.staticFileLoader("schedule", "json")
+        val schedule = fileLoader.load("schedule", "json")
         schedule?.let {
             val scheduleJson = Json {
                 allowStructuredMapKeys = true
@@ -60,7 +62,7 @@ abstract class StaticFileLoaderTest {
 
     @Test
     fun testSpeakers() {
-        val speakers = ServiceRegistry.staticFileLoader("speakers", "json")
+        val speakers = fileLoader.load("speakers", "json")
         speakers?.let {
             val speakersJson = Json {
                 allowStructuredMapKeys = true

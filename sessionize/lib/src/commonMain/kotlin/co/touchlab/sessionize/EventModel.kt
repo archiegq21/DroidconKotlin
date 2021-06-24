@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 import kotlin.math.max
 
 class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInfo>(
@@ -28,9 +28,9 @@ class EventModel(val sessionId: String) : BaseQueryModelView<Session, SessionInf
     Dispatchers.Main
 ), KoinComponent {
 
-    private val sessionizeApi: SessionizeApi by lazy { get() }
+    private val sessionizeApi: SessionizeApi by inject()
 
-    private val analyticsApi: AnalyticsApi by lazy { get() }
+    private val analyticsApi: AnalyticsApi by inject()
 
     init {
         ServiceRegistry.clLogCallback("init EventModel($sessionId)")

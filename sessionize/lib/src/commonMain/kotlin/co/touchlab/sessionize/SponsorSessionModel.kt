@@ -10,13 +10,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.set
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
 object SponsorSessionModel : BaseModel(Dispatchers.Main), KoinComponent {
 
-    private val analyticsApi: AnalyticsApi by lazy { get() }
+    private val analyticsApi: AnalyticsApi by inject()
 
     //This is super ugly and I apologize, but the changes weren't finished in time and I need to release...
     var sponsor: Sponsor? by FrozenDelegate()

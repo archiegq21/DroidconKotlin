@@ -8,13 +8,13 @@ import com.russhwolf.settings.Settings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 
 class SettingsModel : BaseModel(Dispatchers.Main), KoinComponent {
 
-    private val settings: Settings by lazy { get() }
+    private val settings: Settings by inject()
 
-    private val notificationsApi: NotificationsApi by lazy { get() }
+    private val notificationsApi: NotificationsApi by inject()
 
     val feedbackEnabled: Boolean
         get() = settings.getBoolean(FEEDBACK_ENABLED, true)
