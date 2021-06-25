@@ -2,7 +2,6 @@ package co.touchlab.sessionize.api
 
 import co.touchlab.sessionize.BaseModel
 import co.touchlab.sessionize.Durations
-import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.SettingsKeys
 import co.touchlab.sessionize.db.SessionizeDbHelper
 import co.touchlab.sessionize.jsondata.Days
@@ -12,22 +11,33 @@ import co.touchlab.sessionize.platform.NotificationsModel.createNotifications
 import co.touchlab.sessionize.platform.NotificationsModel.notificationsEnabled
 import co.touchlab.sessionize.platform.currentTimeMillis
 import co.touchlab.sessionize.platform.printThrowable
+import co.touchlab.sessionize.util.SoftExceptionHandler
+import com.russhwolf.settings.Settings
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.native.concurrent.ThreadLocal
 
 
 @ThreadLocal
-object NetworkRepo {
-    fun dataCalls() = CoroutineScope(ServiceRegistry.coroutinesDispatcher).mainScope.launch {
+object NetworkRepo : KoinComponent {
+
+    private val api: SessionizeApi by inject()
+
+    private val settings: Settings by inject()
+
+    private val exceptionHandler: SoftExceptionHandler by inject()
+
+    fun dataCalls() = CoroutineScope(Dispatchers.Main).mainScope.launch {
         try {
-            val api = ServiceRegistry.sessionizeApi
             val networkSpeakers = api.getSpeakers()
             val networkSessions = api.getSessions()
             val networkSponsorSessions = api.getSponsorSession()
 
-            callPrimeAll(networkSpeakers, networkSessions, networkSponsorSessions)
+            callPrimeAll(networkSpeakers, networkSessions, networkSponsorSessions, settings)
 
             //If we do some kind of data re-load after a user logs in, we'll need to update this.
             //We assume for now that when the app first starts, you have nothing rsvp'd
@@ -42,30 +52,31 @@ object NetworkRepo {
     internal suspend fun callPrimeAll(
         speakers: List<Speaker>,
         schedules: List<Days>,
-        sponsorSessions: List<SponsorSessionGroup>
-    ) = withContext(ServiceRegistry.backgroundDispatcher) {
+        sponsorSessions: List<SponsorSessionGroup>,
+        settings: Settings,
+    ) = withContext(Dispatchers.Default) {
         SessionizeDbHelper.primeAll(
             speakers,
             schedules,
             sponsorSessions
         )
-        ServiceRegistry.appSettings.putLong(SettingsKeys.KEY_LAST_LOAD, currentTimeMillis())
+        settings.putLong(SettingsKeys.KEY_LAST_LOAD, currentTimeMillis())
     }
 
     fun refreshData() {
-        if (!ServiceRegistry.appSettings.getBoolean(SettingsKeys.KEY_FIRST_RUN, true)) {
-            val lastLoad = ServiceRegistry.appSettings.getLong(SettingsKeys.KEY_LAST_LOAD)
+        if (!settings.getBoolean(SettingsKeys.KEY_FIRST_RUN, true)) {
+            val lastLoad = settings.getLong(SettingsKeys.KEY_LAST_LOAD)
             if (lastLoad < (currentTimeMillis() - (Durations.TWO_HOURS_MILLIS.toLong()))) {
                 dataCalls()
             }
         }
     }
 
-    fun sendFeedback() = CoroutineScope(ServiceRegistry.coroutinesDispatcher).mainScope.launch {
+    fun sendFeedback() = CoroutineScope(Dispatchers.Main).mainScope.launch {
         try {
             SessionizeDbHelper.sendFeedback()
         } catch (e: Throwable) {
-            ServiceRegistry.softExceptionCallback(e, "Feedback Send Failed")
+            exceptionHandler.handle(e, "Feedback Send Failed")
         }
     }
 

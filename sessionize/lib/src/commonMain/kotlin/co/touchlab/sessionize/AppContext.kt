@@ -2,26 +2,42 @@ package co.touchlab.sessionize
 
 import co.touchlab.sessionize.SettingsKeys.KEY_FIRST_RUN
 import co.touchlab.sessionize.api.NetworkRepo
+import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.db.SessionizeDbHelper
+import co.touchlab.sessionize.file.FileLoader
 import co.touchlab.sessionize.file.FileRepo
 import co.touchlab.sessionize.platform.NotificationsModel
-import co.touchlab.sessionize.platform.backgroundDispatcher
 import co.touchlab.sessionize.platform.printThrowable
-import kotlinx.coroutines.*
+import com.russhwolf.settings.Settings
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
+import kotlin.native.concurrent.ThreadLocal
 
-object AppContext {
+@ThreadLocal
+object AppContext: KoinComponent {
+
     private val mainScope = MainScope()
+
+    private val fileLoader: FileLoader by inject()
+
+    private val settings: Settings by inject()
+
+    private val notificationsApi: NotificationsApi by inject()
 
     fun initAppContext(
         networkRepo: NetworkRepo = NetworkRepo,
         fileRepo: FileRepo = FileRepo,
-        serviceRegistry: ServiceRegistry = ServiceRegistry,
         dbHelper: SessionizeDbHelper = SessionizeDbHelper,
         notificationsModel: NotificationsModel = NotificationsModel
     ) {
-        dbHelper.initDatabase(serviceRegistry.dbDriver)
+        dbHelper.initDatabase(get())
 
-        serviceRegistry.notificationsApi.initializeNotifications { success ->
+        notificationsApi.initializeNotifications { success ->
             if (success) {
                 mainScope.launch {
                     notificationsModel.createNotifications()
@@ -32,29 +48,27 @@ object AppContext {
         }
 
         mainScope.launch {
-            maybeLoadSeedData(fileRepo, serviceRegistry)
+            maybeLoadSeedData(settings, fileRepo)
             networkRepo.refreshData()
         }
     }
 
-    private suspend fun maybeLoadSeedData(fileRepo: FileRepo, serviceRegistry: ServiceRegistry) =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+    private suspend fun maybeLoadSeedData(settings: Settings, fileRepo: FileRepo) =
+        withContext(Dispatchers.Default) {
             try {
-                if (firstRun(serviceRegistry)) {
-                    fileRepo.seedFileLoad()
-                    updateFirstRun(serviceRegistry)
+                if (firstRun(settings)) {
+                    fileRepo.seedFileLoad(fileLoader)
+                    updateFirstRun(settings)
                 }
             } catch (e: Exception) {
                 printThrowable(e)
             }
         }
 
-    private fun firstRun(serviceRegistry: ServiceRegistry): Boolean =
-        serviceRegistry.appSettings.getBoolean(KEY_FIRST_RUN, true)
+    private fun firstRun(settings: Settings): Boolean =
+        settings.getBoolean(KEY_FIRST_RUN, true)
 
-    private fun updateFirstRun(serviceRegistry: ServiceRegistry) {
-        serviceRegistry.appSettings.putBoolean(KEY_FIRST_RUN, false)
+    private fun updateFirstRun(settings: Settings) {
+        settings.putBoolean(KEY_FIRST_RUN, false)
     }
-
-    val backgroundContext = backgroundDispatcher()
 }

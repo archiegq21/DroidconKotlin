@@ -18,4 +18,5 @@ class SponsorViewModel {
             SponsorsModel.loadSponsors(proc, error)
         }
     }
+
 }

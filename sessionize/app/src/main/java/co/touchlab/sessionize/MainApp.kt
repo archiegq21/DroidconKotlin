@@ -1,36 +1,33 @@
 package co.touchlab.sessionize
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
-import co.touchlab.droidcon.db.DroidconDb
 import co.touchlab.sessionize.api.NetworkRepo
-import co.touchlab.sessionize.api.SessionizeApiImpl
+import co.touchlab.sessionize.api.NotificationsApi
+import co.touchlab.sessionize.di.androidModule
+import co.touchlab.sessionize.di.initKoin
 import co.touchlab.sessionize.platform.AndroidAppContext
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.russhwolf.settings.AndroidSettings
-import com.squareup.sqldelight.android.AndroidSqliteDriver
-import kotlinx.coroutines.Dispatchers
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.Koin
 
 class MainApp : Application() {
+
+    private lateinit var koin: Koin
+
+    private val notificationsApi: NotificationsApi by lazy { koin.get() }
+
     override fun onCreate() {
         super.onCreate()
-        AndroidAppContext.app = this
-        ServiceRegistry.initLambdas(
-            this::loadAsset,
-            { Log.w("MainApp", it) },
-            { e: Throwable, message: String ->
-                Log.e("MainApp", message, e)
-            })
 
-        ServiceRegistry.initServiceRegistry(
-            AndroidSqliteDriver(DroidconDb.Schema, this, "droidcondb2"),
-            AndroidSettings.Factory(this).create("DROIDCON_SETTINGS2"),
-            SessionizeApiImpl,
-            AnalyticsApiImpl(FirebaseAnalytics.getInstance(this)),
-            NotificationsApiImpl(),
-            BuildConfig.TIME_ZONE
-        )
+        TimeZoneProvider.init(BuildConfig.TIME_ZONE)
+
+        koin = initKoin(
+            platformModule = androidModule(),
+        ) {
+            androidContext(this@MainApp)
+        }.koin
+
+        AndroidAppContext.app = this
 
         AppContext.initAppContext()
 
@@ -46,11 +43,7 @@ class MainApp : Application() {
 
     override fun onTerminate() {
         super.onTerminate()
-        ServiceRegistry.notificationsApi.deinitializeNotifications()
+        notificationsApi.deinitializeNotifications()
     }
 
-    private fun loadAsset(fileName: String, filePrefix: String): String? =
-        assets.open("$fileName.$filePrefix", Context.MODE_PRIVATE)
-            .bufferedReader()
-            .use { it.readText() }
 }

@@ -3,10 +3,6 @@ package co.touchlab.sessionize.platform
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.newSingleThreadContext
-import java.net.URL
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -73,5 +69,3 @@ actual fun createUuid(): String = UUID.randomUUID().toString()
 actual fun printThrowable(t: Throwable) {
     t.printStackTrace()
 }
-
-actual fun backgroundDispatcher(): CoroutineDispatcher = Dispatchers.IO

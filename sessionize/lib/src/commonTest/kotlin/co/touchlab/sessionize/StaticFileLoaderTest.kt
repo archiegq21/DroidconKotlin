@@ -1,22 +1,23 @@
 package co.touchlab.sessionize
 
 
-import co.touchlab.sessionize.mocks.NotificationsApiMock
+import co.touchlab.sessionize.file.FileLoader
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-abstract class StaticFileLoaderTest {
+abstract class StaticFileLoaderTest: KoinTest {
+
+    val fileLoader: FileLoader by inject()
 
     fun setUp() {
-        ServiceRegistry.initServiceRegistry(
-            testDbConnection(),
-            TestSettings(), SessionizeApiMock(), AnalyticsApiMock(), NotificationsApiMock(), "-0400"
-        )
+        initTestKoin("-0800")
     }
 
     @AfterTest
@@ -25,7 +26,7 @@ abstract class StaticFileLoaderTest {
 
     @Test
     fun testAbout() {
-        val about = ServiceRegistry.staticFileLoader("about", "json")
+        val about = fileLoader.load("about", "json")
         about?.let {
 
             val aboutJson = Json {
@@ -42,7 +43,7 @@ abstract class StaticFileLoaderTest {
 
     @Test
     fun testSchedule() {
-        val schedule = ServiceRegistry.staticFileLoader("schedule", "json")
+        val schedule = fileLoader.load("schedule", "json")
         schedule?.let {
             val scheduleJson = Json {
                 allowStructuredMapKeys = true
@@ -56,7 +57,7 @@ abstract class StaticFileLoaderTest {
 
     @Test
     fun testSpeakers() {
-        val speakers = ServiceRegistry.staticFileLoader("speakers", "json")
+        val speakers = fileLoader.load("speakers", "json")
         speakers?.let {
             val speakersJson = Json {
                 allowStructuredMapKeys = true

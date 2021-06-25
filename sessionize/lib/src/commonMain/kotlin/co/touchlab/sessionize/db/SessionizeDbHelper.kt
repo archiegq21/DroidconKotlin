@@ -1,7 +1,7 @@
 package co.touchlab.sessionize.db
 
 import co.touchlab.droidcon.db.*
-import co.touchlab.sessionize.ServiceRegistry
+import co.touchlab.sessionize.api.SessionizeApi
 import co.touchlab.sessionize.api.parseSessionsFromDays
 import co.touchlab.sessionize.jsondata.Days
 import co.touchlab.sessionize.jsondata.SessionSpeaker
@@ -13,9 +13,14 @@ import co.touchlab.stately.concurrency.value
 import co.touchlab.stately.freeze
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.db.SqlDriver
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object SessionizeDbHelper {
+object SessionizeDbHelper : KoinComponent {
+
+    private val sessionizeApi: SessionizeApi by inject()
 
     private val driverRef = AtomicReference<SqlDriver?>(null)
     private val dbRef = AtomicReference<DroidconDb?>(null)
@@ -49,7 +54,7 @@ object SessionizeDbHelper {
         sessions.forEach {
             val rating = it.feedbackRating
             if (rating != null) {
-                if (ServiceRegistry.sessionizeApi.sendFeedback(
+                if (sessionizeApi.sendFeedback(
                         it.id,
                         rating.toInt(),
                         it.feedbackComment
@@ -61,7 +66,7 @@ object SessionizeDbHelper {
         }
     }
 
-    internal suspend fun allFeedbackToSend() = withContext(ServiceRegistry.backgroundDispatcher) {
+    internal suspend fun allFeedbackToSend() = withContext(Dispatchers.Default) {
         instance.sessionQueries.sessionFeedbackToSend().executeAsList()
     }
 
@@ -171,7 +176,7 @@ object SessionizeDbHelper {
                     } else {
                         0
                     },
-                    roomId = session.roomId!!.toLong(),
+                    roomId = session.roomId.toLong(),
                     rsvp = dbSession.rsvp,
                     feedbackRating = dbSession.feedbackRating,
                     feedbackComment = dbSession.feedbackComment,

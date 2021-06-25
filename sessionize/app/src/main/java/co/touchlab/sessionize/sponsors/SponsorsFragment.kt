@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.touchlab.sessionize.R
 import co.touchlab.sessionize.SponsorSessionModel
+import co.touchlab.sessionize.SponsorsModel
 import co.touchlab.sessionize.databinding.FragmentSponsorBinding
 import co.touchlab.sessionize.databinding.ItemSponsorGroupBinding
 import co.touchlab.sessionize.jsondata.SponsorGroup
-import co.touchlab.sessionize.sponsorClicked
 import co.touchlab.sessionize.util.viewBindingLifecycle
 import com.squareup.picasso.Picasso
 
@@ -97,7 +97,7 @@ class SponsorsFragment : Fragment() {
                 holder.binding.flowGroup.addView(iv)
                 iv.setOnClickListener {
 
-                    sponsorClicked(sponsor)
+                    SponsorsModel.sponsorClicked(sponsor)
 
                     if (sponsor.sponsorId.isNullOrBlank()) {
                         val i = Intent(Intent.ACTION_VIEW)

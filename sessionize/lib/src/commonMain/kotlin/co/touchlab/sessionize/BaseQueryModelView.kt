@@ -3,13 +3,17 @@ package co.touchlab.sessionize
 import co.touchlab.sessionize.db.coroutines.asFlow
 import co.touchlab.sessionize.platform.assertNotMainThread
 import co.touchlab.sessionize.platform.printThrowable
+import co.touchlab.sessionize.util.SoftExceptionHandler
 import co.touchlab.stately.ensureNeverFrozen
 import com.squareup.sqldelight.Query
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -18,12 +22,13 @@ import kotlin.coroutines.CoroutineContext
  * generically defined to take data extracted from the Query, and manage
  * registering and shutting down.
  */
-@UseExperimental(InternalCoroutinesApi::class)
 abstract class BaseQueryModelView<Q : Any, VT>(
     query: Query<Q>,
     extractData: (Query<Q>) -> VT,
     mainContext: CoroutineContext
-) : BaseModel(mainContext) {
+) : BaseModel(mainContext), KoinComponent {
+
+    protected val exceptionHandler: SoftExceptionHandler by inject()
 
     init {
         ensureNeverFrozen()
@@ -33,7 +38,7 @@ abstract class BaseQueryModelView<Q : Any, VT>(
                     assertNotMainThread()
                     extractData(it)
                 }
-                .flowOn(ServiceRegistry.backgroundDispatcher)
+                .flowOn(Dispatchers.Default)
                 .collect { vt ->
                     view?.let {
                         it.update(vt)
@@ -56,9 +61,9 @@ abstract class BaseQueryModelView<Q : Any, VT>(
 
     interface View<VT> {
         suspend fun update(data: VT)
-        fun error(t: Throwable) {
+        fun error(exceptionHandler: SoftExceptionHandler, t: Throwable) {
             printThrowable(t)
-            ServiceRegistry.softExceptionCallback(t, t.message ?: "(Unknown View Error)")
+            exceptionHandler.handle(t, t.message ?: "(Unknown View Error)")
         }
     }
 }

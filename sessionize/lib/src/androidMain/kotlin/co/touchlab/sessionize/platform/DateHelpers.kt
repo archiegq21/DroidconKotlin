@@ -1,6 +1,7 @@
 package co.touchlab.sessionize.platform
 
-import co.touchlab.sessionize.ServiceRegistry
+import co.touchlab.sessionize.TimeZoneProvider
+import org.koin.core.component.KoinComponent
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -9,10 +10,11 @@ actual class Date(val date: java.util.Date) {
     actual fun toLongMillis(): Long = date.time
 }
 
-actual class DateFormatHelper actual constructor(format: String) {
+actual class DateFormatHelper actual constructor(format: String) : KoinComponent {
+
     private val dateFormatterConference = object : ThreadLocal<DateFormat>() {
         override fun initialValue(): DateFormat = SimpleDateFormat(format).apply {
-            this.timeZone = TimeZone.getTimeZone(ServiceRegistry.timeZone)
+            this.timeZone = TimeZone.getTimeZone(TimeZoneProvider.timeZone)
         }
     }
 

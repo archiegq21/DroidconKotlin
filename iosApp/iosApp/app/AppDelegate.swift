@@ -15,10 +15,23 @@ import Firebase
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    let serviceRegistry = ServiceRegistry()
-
+    
+    var notificationsApi = NotificationsApiImpl()
+    
+    var timeZoneProvider = TimeZoneProvider()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        timeZoneProvider.doInit(timeZone: Bundle.main.object(forInfoDictionaryKey: "TimeZone") as! String)
+        
+        KoinKt.doInitKoin(
+            platformModule: PlatformModuleKt.iosModule(
+                analyticsCallback: analyticsCallback,
+                notificationsApi: notificationsApi,
+                logHandler: LogHandlerImpl()
+            ),
+            additionalSetUp: { _ in }
+        )
+        
         let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") ?? ""
         let fileExists = FileManager.default.fileExists(atPath: path)
         if(fileExists){
@@ -30,18 +43,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         application.statusBarStyle = .lightContent
 
-        serviceRegistry.doInitLambdas(staticFileLoader: loadAsset, clLogCallback: csLog, softExceptionCallback: softExceptionCallback)
-
-        let timeZone = Bundle.main.object(forInfoDictionaryKey: "TimeZone") as! String
-        serviceRegistry.doInitServiceRegistry(sqlDriver: FunctionsKt.defaultDriver(),
-                                                settings: FunctionsKt.defaultSettings(),
-                                                sessionizeApi: SessionizeApiImpl(),
-                                                analyticsApi: FunctionsKt.createAnalyticsApiImpl(analyticsCallback: analyticsCallback),
-                                                notificationsApi: NotificationsApiImpl(),
-                                                timeZone: timeZone)
-
-
-        AppContext().doInitAppContext(networkRepo: NetworkRepo(), fileRepo: FileRepo(), serviceRegistry: ServiceRegistry(), dbHelper: SessionizeDbHelper(), notificationsModel: NotificationsModel())
+        AppContext().doInitAppContext(
+            networkRepo: NetworkRepo(),
+            fileRepo: FileRepo(),
+            dbHelper: SessionizeDbHelper(),
+            notificationsModel: NotificationsModel()
+        )
 
         NetworkRepo().sendFeedback()
         
@@ -52,19 +59,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func softExceptionCallback(e:KotlinThrowable, message:String) {
-    }
-    
-    func csLog(s:String) {
-        CLSLogv(s, getVaList([]))
-    }
-
-    func loadAsset(filePrefix:String, fileType:String) -> String?{
-        do{
-            let bundleFile = Bundle.main.path(forResource: filePrefix, ofType: fileType)
-            return try String(contentsOfFile: bundleFile!)
-        } catch {
-            return nil
-        }
     }
 
     func analyticsCallback(name:String, params:[String:Any]) {
@@ -91,7 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-        serviceRegistry.notificationsApi.deinitializeNotifications()
+        notificationsApi.deinitializeNotifications()
     }
 }
 
@@ -111,3 +105,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        )
 //    }
 //}
+
+class LogHandlerImpl : LogHandler {
+    func log(s: String) {
+        CLSLogv(s, getVaList([]))
+    }
+}

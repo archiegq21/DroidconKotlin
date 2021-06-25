@@ -1,6 +1,5 @@
 package co.touchlab.sessionize
 
-import android.app.Activity
 import android.app.AlarmManager
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -21,6 +20,7 @@ import java.util.*
 class NotificationPublisher : BroadcastReceiver() {
 
     private val mainScope = MainScope()
+
     override fun onReceive(context: Context, intent: Intent) {
         val notification = intent.getParcelableExtra<Notification>(NOTIFICATION)
         val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)

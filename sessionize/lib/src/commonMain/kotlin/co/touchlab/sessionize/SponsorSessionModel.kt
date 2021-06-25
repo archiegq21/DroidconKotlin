@@ -1,16 +1,26 @@
 package co.touchlab.sessionize
 
 import co.touchlab.droidcon.db.UserAccount
+import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.db.SessionizeDbHelper.sponsorSessionQueries
 import co.touchlab.sessionize.db.SessionizeDbHelper.userAccountQueries
 import co.touchlab.sessionize.jsondata.Sponsor
 import co.touchlab.sessionize.platform.printThrowable
+import co.touchlab.sessionize.util.SoftExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.set
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
+object SponsorSessionModel : BaseModel(Dispatchers.Main), KoinComponent {
+
+    private val analyticsApi: AnalyticsApi by inject()
 
     //This is super ugly and I apologize, but the changes weren't finished in time and I need to release...
     var sponsor: Sponsor? by FrozenDelegate()
@@ -41,7 +51,7 @@ object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
     }
 
     internal suspend fun loadSponsorDetailData(sponsor: Sponsor): Pair<String, List<UserAccount>> =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+        withContext(Dispatchers.Default) {
             val id = sponsor.sponsorId!!
             Pair(
                 sponsorSessionQueries.sponsorSessionById(id).executeAsOne().description ?: "",
@@ -57,7 +67,7 @@ object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
                 params["sponsorId"] = it.sponsorId ?: ""
                 params["name"] = it.name
 
-                ServiceRegistry.analyticsApi.logEvent("SPONSOR_VIEWED", params)
+                analyticsApi.logEvent("SPONSOR_VIEWED", params)
             }
 
         } catch (e: Exception) {
@@ -67,9 +77,9 @@ object SponsorSessionModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
 
     interface View<VT> {
         suspend fun update(data: VT)
-        fun error(t: Throwable) {
+        fun error(exceptionHandler: SoftExceptionHandler, t: Throwable) {
             printThrowable(t)
-            ServiceRegistry.softExceptionCallback(t, t.message ?: "(Unknown View Error)")
+            exceptionHandler.handle(t, t.message ?: "(Unknown View Error)")
         }
     }
 }

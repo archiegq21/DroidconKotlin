@@ -2,34 +2,43 @@ package co.touchlab.sessionize.platform
 
 import co.touchlab.droidcon.db.MySessions
 import co.touchlab.sessionize.Durations
-import co.touchlab.sessionize.ServiceRegistry
 import co.touchlab.sessionize.SettingsKeys.FEEDBACK_ENABLED
 import co.touchlab.sessionize.SettingsKeys.LOCAL_NOTIFICATIONS_ENABLED
 import co.touchlab.sessionize.SettingsKeys.REMINDERS_ENABLED
+import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.db.SessionizeDbHelper.sessionQueries
+import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
 
-object NotificationsModel {
+object NotificationsModel: KoinComponent {
+
+    private val settings: Settings by inject()
+
+    private val notificationsApi: NotificationsApi by lazy { get() }
 
     // Settings
     var notificationsEnabled: Boolean
-        get() = ServiceRegistry.appSettings.getBoolean(LOCAL_NOTIFICATIONS_ENABLED, true)
+        get() = settings.getBoolean(LOCAL_NOTIFICATIONS_ENABLED, true)
         set(value) {
-            ServiceRegistry.appSettings[LOCAL_NOTIFICATIONS_ENABLED] = value
+            settings[LOCAL_NOTIFICATIONS_ENABLED] = value
         }
 
     var feedbackEnabled: Boolean
-        get() = ServiceRegistry.appSettings.getBoolean(FEEDBACK_ENABLED, true)
+        get() = settings.getBoolean(FEEDBACK_ENABLED, true)
         set(value) {
-            ServiceRegistry.appSettings[FEEDBACK_ENABLED] = value
+            settings[FEEDBACK_ENABLED] = value
         }
 
     var remindersEnabled: Boolean
-        get() = ServiceRegistry.appSettings.getBoolean(LOCAL_NOTIFICATIONS_ENABLED, true) &&
-                ServiceRegistry.appSettings.getBoolean(REMINDERS_ENABLED, true)
+        get() = settings.getBoolean(LOCAL_NOTIFICATIONS_ENABLED, true) &&
+                settings.getBoolean(REMINDERS_ENABLED, true)
         set(value) {
-            ServiceRegistry.appSettings[REMINDERS_ENABLED] = value
+            settings[REMINDERS_ENABLED] = value
         }
 
     suspend fun createNotifications() {
@@ -45,17 +54,17 @@ object NotificationsModel {
     }
 
     fun cancelFeedbackNotifications() =
-        ServiceRegistry.notificationsApi.cancelFeedbackNotifications()
+        notificationsApi.cancelFeedbackNotifications()
 
     fun cancelReminderNotifications(andDismissals: Boolean) =
-        ServiceRegistry.notificationsApi.cancelReminderNotifications(andDismissals)
+        notificationsApi.cancelReminderNotifications(andDismissals)
 
     suspend fun recreateReminderNotifications() {
         cancelReminderNotifications(false)
         if (remindersEnabled) {
             val mySessions = mySessions()
             if (mySessions.isNotEmpty()) {
-                ServiceRegistry.notificationsApi.scheduleReminderNotificationsForSessions(mySessions)
+                notificationsApi.scheduleReminderNotificationsForSessions(mySessions)
             }
         }
     }
@@ -65,13 +74,13 @@ object NotificationsModel {
         if (feedbackEnabled) {
             val mySessions = mySessions()
             if (mySessions.isNotEmpty()) {
-                ServiceRegistry.notificationsApi.scheduleFeedbackNotificationsForSessions(mySessions)
+                notificationsApi.scheduleFeedbackNotificationsForSessions(mySessions)
             }
         }
     }
 
     private suspend fun mySessions(): List<MySessions> =
-        withContext(ServiceRegistry.backgroundDispatcher) {
+        withContext(Dispatchers.Default) {
             sessionQueries.mySessions().executeAsList()
         }
 

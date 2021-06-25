@@ -1,15 +1,24 @@
 package co.touchlab.sessionize
 
+import co.touchlab.sessionize.api.AnalyticsApi
 import co.touchlab.sessionize.jsondata.Sponsor
 import co.touchlab.sessionize.jsondata.SponsorGroup
+import co.touchlab.sessionize.util.SoftExceptionHandler
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.firestore.orderBy
+import kotlinx.coroutines.Dispatchers
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
+object SponsorsModel : BaseModel(Dispatchers.Main), KoinComponent {
+
+    private val analyticsApi: AnalyticsApi by inject()
+
+    private val exceptionHandler: SoftExceptionHandler by inject()
 
     suspend fun loadSponsors(
         proc: (sponsors: List<SponsorGroup>) -> Unit,
@@ -24,7 +33,7 @@ object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
                     .documents
             )
         } catch (e: Throwable) {
-            ServiceRegistry.softExceptionCallback(e, "loadSponsorsFromServer failed")
+            exceptionHandler.handle(e, "loadSponsorsFromServer failed")
             error(e)
         }
     }
@@ -53,11 +62,11 @@ object SponsorsModel : BaseModel(ServiceRegistry.coroutinesDispatcher) {
 
         return SponsorGroup(groupName, sponsors)
     }
-}
 
-fun sponsorClicked(sponsor: Sponsor) {
-    ServiceRegistry.analyticsApi.logEvent(
-        "sponsor_clicked",
-        mapOf(Pair("id", sponsor.sponsorId.toString()), Pair("name", sponsor.name))
-    )
+    fun sponsorClicked(sponsor: Sponsor) {
+        analyticsApi.logEvent(
+            "sponsor_clicked",
+            mapOf(Pair("id", sponsor.sponsorId.toString()), Pair("name", sponsor.name))
+        )
+    }
 }

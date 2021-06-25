@@ -4,16 +4,23 @@ import co.touchlab.droidcon.db.Session
 import co.touchlab.droidcon.db.UserAccount
 import co.touchlab.sessionize.db.SessionizeDbHelper.userAccountQueries
 import co.touchlab.sessionize.db.sessions
+import co.touchlab.sessionize.util.LogHandler
+import kotlinx.coroutines.Dispatchers
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class SpeakerModel(speakerId: String) : BaseQueryModelView<UserAccount, UserAccount>(
     userAccountQueries.selectById(speakerId),
     {
         it.executeAsOne()
     },
-    ServiceRegistry.coroutinesDispatcher
-) {
+    Dispatchers.Main
+), KoinComponent {
+
+    private val logHandler: LogHandler by inject()
+
     init {
-        ServiceRegistry.clLogCallback("init SpeakerModel($speakerId)")
+        logHandler.log("init SpeakerModel($speakerId)")
     }
 
     interface SpeakerView : View<UserAccount>

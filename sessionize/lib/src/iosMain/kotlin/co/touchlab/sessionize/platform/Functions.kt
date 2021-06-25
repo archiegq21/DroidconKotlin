@@ -1,13 +1,7 @@
 package co.touchlab.sessionize.platform
 
-import co.touchlab.droidcon.db.DroidconDb
 import co.touchlab.sessionize.api.AnalyticsApi
-import com.russhwolf.settings.AppleSettings
-import com.russhwolf.settings.Settings
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import platform.Foundation.*
 
 actual fun currentTimeMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
@@ -16,13 +10,6 @@ internal actual val mainThread: Boolean
     get() = NSThread.isMainThread
 
 actual fun createUuid(): String = NSUUID.UUID().UUIDString
-
-
-@Suppress("unused")
-fun defaultDriver(): SqlDriver = NativeSqliteDriver(DroidconDb.Schema, "sessionizedb")
-
-@Suppress("unused")
-fun defaultSettings(): Settings = AppleSettings.Factory().create("DROIDCON_SETTINGS")
 
 private fun getDirPath(folder: String): String {
     val paths =
@@ -54,6 +41,3 @@ fun forceInclude() = listOf(CoroutineDispatcher::class)
 actual fun printThrowable(t: Throwable) {
     t.printStackTrace()
 }
-
-actual fun backgroundDispatcher(): CoroutineDispatcher =
-    Dispatchers.Default //newFixedThreadPoolContext(1, "arst")
