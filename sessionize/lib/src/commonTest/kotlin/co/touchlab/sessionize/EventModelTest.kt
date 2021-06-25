@@ -1,20 +1,29 @@
 package co.touchlab.sessionize
 
 import co.touchlab.sessionize.api.AnalyticsApi
+import co.touchlab.sessionize.api.NotificationsApi
 import co.touchlab.sessionize.api.SessionizeApi
 import co.touchlab.sessionize.db.DateAdapter
 import co.touchlab.sessionize.db.SessionizeDbHelper
+import co.touchlab.sessionize.di.initKoin
+import co.touchlab.sessionize.file.FileLoader
 import co.touchlab.sessionize.jsondata.Days
 import co.touchlab.sessionize.jsondata.Speaker
 import co.touchlab.sessionize.jsondata.SponsorSessionGroup
 import co.touchlab.sessionize.mocks.FeedbackApiMock
 import co.touchlab.sessionize.mocks.NotificationsApiMock
+import co.touchlab.sessionize.util.LogHandler
+import co.touchlab.sessionize.util.SoftExceptionHandler
+import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.Dispatchers
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+import org.koin.test.KoinTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-abstract class EventModelTest {
+abstract class EventModelTest: KoinTest {
     private val sessionizeApiMock = SessionizeApiMock()
     private val analyticsApiMock = AnalyticsApiMock()
     private val notificationsApiMock = NotificationsApiMock()
@@ -24,26 +33,7 @@ abstract class EventModelTest {
 
     @BeforeTest
     fun setup() {
-//        ServiceRegistry.initServiceRegistry(
-////            testDbConnection(),
-////            TestSettings(),
-////            sessionizeApiMock,
-////            analyticsApiMock,
-////            notificationsApiMock,
-//            timeZone
-//        )
-
-//        ServiceRegistry.initLambdas({ filePrefix, fileType ->
-//            when (filePrefix) {
-//                "sponsors" -> SPONSORS
-//                "speakers" -> SPEAKERS
-//                "schedule" -> SCHEDULE
-//                else -> SCHEDULE
-//            }
-//        }, { s: String -> Unit }, { e: Throwable, message: String -> println(message) })
-
-        AppContext.initAppContext()
-
+        initTestKoin("-0800")
     }
 
     @Test

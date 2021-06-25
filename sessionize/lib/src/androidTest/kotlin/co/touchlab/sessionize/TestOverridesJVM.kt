@@ -13,23 +13,10 @@ import kotlin.test.BeforeTest
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.P])
 class StaticFileLoaderTestJVM : StaticFileLoaderTest() {
-
-    override val fileLoader: FileLoader by lazy {
-        FileLoaderImpl(AndroidAppContext.app)
-    }
     
     @BeforeTest
     fun androidSetup() {
-
-//        ServiceRegistry.initLambdas(
-//            { s: String -> Unit },
-//            { e: Throwable, message: String ->
-//                Log.e("StaticFileLoaderTest", message, e)
-//            }
-//        )
-
         setUp()
-
         AndroidAppContext.app = ApplicationProvider.getApplicationContext()
     }
 }

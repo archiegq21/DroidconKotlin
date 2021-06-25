@@ -5,24 +5,19 @@ import co.touchlab.sessionize.file.FileLoader
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
+import org.koin.test.KoinTest
+import org.koin.test.inject
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-abstract class StaticFileLoaderTest {
+abstract class StaticFileLoaderTest: KoinTest {
 
-    abstract val fileLoader: FileLoader
+    val fileLoader: FileLoader by inject()
 
     fun setUp() {
-//        ServiceRegistry.initServiceRegistry(
-////            testDbConnection(),
-////            TestSettings(),
-////            SessionizeApiMock(),
-////            AnalyticsApiMock(),
-////            NotificationsApiMock(),
-//            "-0400"
-//        )
+        initTestKoin("-0800")
     }
 
     @AfterTest
